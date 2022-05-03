@@ -1,9 +1,11 @@
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
 
+
 class TableWidget(QtWidgets.QWidget):
 
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
+        self.table = None
         self.WidgetInit()
 
     def WidgetInit(self):
@@ -24,31 +26,76 @@ class ProgramWindow(QtWidgets.QMainWindow):
     SubWindowNumber = 0
 
     def __init__(self):
+
+        # parent initialisation
         QtWidgets.QMainWindow.__init__(self)
 
-        self.settings_file = 'settings.ini'
-        self.settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
-        self.XChooseColor = QtGui.QColor(119, 223, 139)
-        self.DataChooseColor = QtGui.QColor(247, 247, 101)
-        self.LoadProgress = QtWidgets.QProgressBar()
-
-        # load
+        # form loading
         uic.loadUi('MyForm2.ui', self)
-        self.set_style(self.settings.value('theme_checked', type=str))
-        self.statusBar().showMessage('Ready')
+
+        # explicit definition of the class attributes
+        self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
+
+        self.actionWindows = self.findChild(QtWidgets.QAction, "actionWindows")
+        self.actionAdaptic = self.findChild(QtWidgets.QAction, "actionAdaptic")
+        self.actionCombinear = self.findChild(QtWidgets.QAction, "actionCombinear")
+        self.actionDarkeum = self.findChild(QtWidgets.QAction, "actionDarkeum")
+        self.actionDiplaytap = self.findChild(QtWidgets.QAction, "actionDiplaytap")
+        self.actionEasyCode = self.findChild(QtWidgets.QAction, "actionEasyCode")
+        self.actionFibers = self.findChild(QtWidgets.QAction, "actionFibers")
+        self.actionIntegrid = self.findChild(QtWidgets.QAction, "actionIntegrid")
+        self.actionIrrorater = self.findChild(QtWidgets.QAction, "actionIrrorater")
+        self.actionPerstfic = self.findChild(QtWidgets.QAction, "actionPerstfic")
+        self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
+        self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
+        self.actionSave = self.findChild(QtWidgets.QAction, "actionSave")
+
+        self.push_cancel = self.findChild(QtWidgets.QPushButton, "push_cancel")
+
+        self.combo_Xrowcol = self.findChild(QtWidgets.QComboBox, "combo_Xrowcol")
+        self.combo_Yrowcol = self.findChild(QtWidgets.QComboBox, "combo_Yrowcol")
+        self.combo_Xnumber = self.findChild(QtWidgets.QComboBox, "combo_Xnumber")
+        self.combo_Ynumber = self.findChild(QtWidgets.QComboBox, "combo_Ynumber")
+        self.combo_Xbegin = self.findChild(QtWidgets.QComboBox, "combo_Xbegin")
+        self.combo_Xend = self.findChild(QtWidgets.QComboBox, "combo_Xend")
+        self.combo_Ybegin = self.findChild(QtWidgets.QComboBox, "combo_Ybegin")
+        self.combo_Yend = self.findChild(QtWidgets.QComboBox, "combo_Yend")
+        self.combo_Datarowbegin = self.findChild(QtWidgets.QComboBox, "combo_Datarowbegin")
+        self.combo_Datarowend = self.findChild(QtWidgets.QComboBox, "combo_Datarowend")
+        self.combo_Datacolbegin = self.findChild(QtWidgets.QComboBox, "combo_Datacolbegin")
+        self.combo_Datacolend = self.findChild(QtWidgets.QComboBox, "combo_Datacolend")
+
+        self.check_Xvalue = self.findChild(QtWidgets.QCheckBox, "check_Xvalue")
+        self.check_Yvalue = self.findChild(QtWidgets.QCheckBox, "check_Yvalue")
+        self.check_Datavalue = self.findChild(QtWidgets.QCheckBox, "check_Datavalue")
+
+        self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
+
+        self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
+        self.label_totalcolumnvalue = self.findChild(QtWidgets.QLabel, "label_totalcolumnvalue")
+        self.label_Xrowcol = self.findChild(QtWidgets.QLabel, "label_Xrowcol")
+        self.label_Yrowcol = self.findChild(QtWidgets.QLabel, "label_Yrowcol")
 
         # settings
+        self.settings_file = 'settings.ini'
+        self.settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
+        self.set_style(self.settings.value('theme_checked', type=str))
         desktop = QtWidgets.QApplication.desktop()
         x = (desktop.width() - self.width()) // 2
         y = (desktop.height() - self.height()) // 2 - 30
         self.move(x, y)
-
-        self.YChooseColor = QtGui.QColor(119, 203, 224)
-        self.NChooseColor = QtGui.QColor(234, 134, 222)
-        # self.stylesheet = "::section{background-color: rgb(200,200,200); color: rgb(220,0,0); \
-        #                   font-family: 'Times New Roman'; font-size: 12pt}"
+        self.statusbar.showMessage('Ready')
+        self.XRange = None
+        self.YRange = None
+        self.DataRange = None
+        self.ListColNumber = None
+        self.ListRowNumber = None
+        self.XChooseColor = QtGui.QColor('green')
+        self.YChooseColor = QtGui.QColor('blue')
+        self.DataChooseColor = QtGui.QColor('yellow')
 
         # new fields
+        self.LoadProgress = QtWidgets.QProgressBar()
         self.LabelX = QtWidgets.QLabel()
         self.LabelY = QtWidgets.QLabel()
         self.LabelData = QtWidgets.QLabel()
@@ -81,17 +128,24 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.actionFibers.triggered.connect(lambda: self.set_style('qss/Fibers.qss'))
         self.actionIrrorater.triggered.connect(lambda: self.set_style('qss/Irrorater.qss'))
         self.actionPerstfic.triggered.connect(lambda: self.set_style('qss/Perstfic.qss'))
+
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
+
         self.combo_Xrowcol.currentIndexChanged.connect(self.XRowColChange)
         self.combo_Yrowcol.currentIndexChanged.connect(self.YRowColChange)
-        self.check_Xvalue.stateChanged.connect(self.XChangeState)
-        self.check_Yvalue.stateChanged.connect(self.YChangeState)
         self.combo_Xnumber.currentIndexChanged.connect(self.XChangeState)
         self.combo_Ynumber.currentIndexChanged.connect(self.YChangeState)
         self.combo_Xbegin.currentIndexChanged.connect(self.XChangeState)
         self.combo_Xend.currentIndexChanged.connect(self.XChangeState)
         self.combo_Ybegin.currentIndexChanged.connect(self.YChangeState)
         self.combo_Yend.currentIndexChanged.connect(self.YChangeState)
+        self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
+        self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
+        self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
+        self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
+
+        self.check_Xvalue.stateChanged.connect(self.XChangeState)
+        self.check_Yvalue.stateChanged.connect(self.YChangeState)
         self.check_Datavalue.stateChanged.connect(self.DataChangeState)
         self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
         self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
@@ -100,14 +154,9 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.SubWindowChange)
 
     def set_style(self, qss_file_name):
-        # settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
-        qss = ""
-        try:
-            with open(qss_file_name, 'r') as qss_file:
-                with qss_file:
-                    qss = qss_file.read()
-        except:
-            pass
+        with open(qss_file_name, 'r') as qss_file:
+            with qss_file:
+                qss = qss_file.read()
         QtWidgets.qApp.setStyleSheet(qss)
         self.settings.setValue("theme_checked", qss_file_name)
         self.settings.sync()
@@ -118,11 +167,6 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.XRange = []
         self.YRange = []
         self.DataRange = []
-        # self.table_Data.setRowCount(0)
-        # self.table_Data.setColumnCount(0)
-        ##        self.combo_Nnumber.clear()
-        ##        self.combo_Nbegin.clear()
-        ##        self.combo_Nend.clear()
         self.combo_Datarowbegin.clear()
         self.combo_Datarowend.clear()
         self.combo_Datacolbegin.clear()
@@ -138,24 +182,22 @@ class ProgramWindow(QtWidgets.QMainWindow):
         if file[0]:
             raw_path = r'{}'.format(file[0])
             f = open(raw_path, 'rt')
-            LineNumber = 0
+            line_number = 0
             for _ in f:
-                LineNumber += 1
+                line_number += 1
             f.seek(0)
-            RowNumber = 0
-            ColNumber = 0
-            self.LoadProgress.setRange(0, LineNumber)
+            row_number = 0
+            col_number = 0
+            self.LoadProgress.setRange(0, line_number)
             self.statusbar.addPermanentWidget(self.LoadProgress)
-            tableWidget = TableWidget()
-            self.subWindow = tableWidget
+            table_widget = TableWidget()
+            self.subWindow = table_widget
             self.subWindow.setObjectName('subwindow ' + str(self.SubWindowNumber))
             self.currentTable = self.subWindow.table
-            # self.currentTable.horizontalHeader().setStyleSheet(self.stylesheet)
-            # self.currentTable.verticalHeader().setStyleSheet(self.stylesheet)
             self.currentTable.setRowCount(0)
             self.currentTable.setColumnCount(0)
             self.subWindow.setWindowTitle(raw_path)
-            self.subWindow.setWindowIcon(QtGui.QIcon('Icons\Text.png'))
+            self.subWindow.setWindowIcon(QtGui.QIcon("Icons/Text.png"))
             self.mdiArea.addSubWindow(self.subWindow)
             self.subWindow.show()
             self.SubWindowNumber += 1
@@ -165,25 +207,25 @@ class ProgramWindow(QtWidgets.QMainWindow):
                 self.currentTable.setRowCount(self.currentTable.rowCount() + 1)
                 if self.currentTable.columnCount() < len(row):
                     self.currentTable.setColumnCount(len(row))
-                    ColNumber = len(row)
+                    col_number = len(row)
                 for i in range(len(row)):
-                    self.currentTable.setItem(RowNumber, i,
+                    self.currentTable.setItem(row_number, i,
                                               QtWidgets.QTableWidgetItem(row[i]))
-                RowNumber += 1
-                self.LoadProgress.setValue(RowNumber)
+                row_number += 1
+                self.LoadProgress.setValue(row_number)
             f.close()
             self.statusbar.showMessage('Initialization of values...')
             self.LoadProgress.setValue(0)
-            self.label_totalrowvalue.setText(str(RowNumber))
-            self.label_totalcolumnvalue.setText(str(ColNumber))
-            self.ListColNumber = list(range(1, ColNumber + 1))
+            self.label_totalrowvalue.setText(str(row_number))
+            self.label_totalcolumnvalue.setText(str(col_number))
+            self.ListColNumber = list(range(1, col_number + 1))
             self.ListColNumber = list(map(str, self.ListColNumber))
-            self.ListRowNumber = list(range(1, RowNumber + 1))
+            self.ListRowNumber = list(range(1, row_number + 1))
             self.ListRowNumber = list(map(str, self.ListRowNumber))
             self.XRowColChange()
-            self.LoadProgress.setValue(RowNumber // 4)
+            self.LoadProgress.setValue(row_number // 4)
             self.YRowColChange()
-            self.LoadProgress.setValue(RowNumber // 2)
+            self.LoadProgress.setValue(row_number // 2)
             # self.combo_Datarowbegin.addItems(5)
             self.combo_Datarowbegin.addItems(self.ListRowNumber)
             self.combo_Datarowend.addItems(self.ListRowNumber)
@@ -191,10 +233,10 @@ class ProgramWindow(QtWidgets.QMainWindow):
             self.combo_Datacolbegin.addItems(self.ListColNumber)
             self.combo_Datacolend.addItems(self.ListColNumber)
             self.combo_Datacolend.setCurrentIndex(len(self.ListColNumber) - 1)
-            self.LoadProgress.setValue(3 * RowNumber // 4)
+            self.LoadProgress.setValue(3 * row_number // 4)
             self.XChangeState()
             self.YChangeState()
-            self.LoadProgress.setValue(RowNumber)
+            self.LoadProgress.setValue(row_number)
             self.DataChangeState()
             self.statusbar.clearMessage()
             self.statusbar.removeWidget(self.LoadProgress)
@@ -205,7 +247,8 @@ class ProgramWindow(QtWidgets.QMainWindow):
             self.LabelData.setText('Data:')
             self.statusbar.addWidget(self.LabelData, 1)
 
-    def FileSave(self):
+    @staticmethod
+    def FileSave():
         file = QtWidgets.QFileDialog.getSaveFileName(parent=MainWindow,
                                                      caption="Save data file",
                                                      directory=QtCore.QDir.currentPath(),
@@ -213,14 +256,14 @@ class ProgramWindow(QtWidgets.QMainWindow):
                                                      initialFilter="Text files (*.dat *.txt)")
 
     def TableRepaint(self):
-        BackgroundColor = QtGui.QColor('white')
+        background_color = QtGui.QColor('white')
         if self.ListRowNumber:
             for j in self.ListRowNumber:
                 for i in self.ListColNumber:
                     jj = int(j) - 1
                     ii = int(i) - 1
                     if self.currentTable.item(jj, ii):
-                        self.currentTable.item(jj, ii).setBackground(BackgroundColor)
+                        self.currentTable.item(jj, ii).setBackground(background_color)
         if self.check_Datavalue.isChecked():
             self.DataSelect()
         if self.check_Xvalue.isChecked():
@@ -366,42 +409,42 @@ class ProgramWindow(QtWidgets.QMainWindow):
             self.TableRepaint()
 
     def DataRangeInit(self):
-        RowBegin = self.combo_Datarowbegin.currentIndex()
-        RowEnd = self.combo_Datarowend.currentIndex()
-        ColBegin = self.combo_Datacolbegin.currentIndex()
-        ColEnd = self.combo_Datacolend.currentIndex()
+        row_begin = self.combo_Datarowbegin.currentIndex()
+        row_end = self.combo_Datarowend.currentIndex()
+        col_begin = self.combo_Datacolbegin.currentIndex()
+        col_end = self.combo_Datacolend.currentIndex()
         if len(self.DataRange):
-            self.DataRange[0] = [RowBegin, ColBegin]
-            self.DataRange[1] = [RowEnd, ColEnd]
+            self.DataRange[0] = [row_begin, col_begin]
+            self.DataRange[1] = [row_end, col_end]
         else:
-            self.DataRange.append([RowBegin, ColBegin])
-            self.DataRange.append([RowEnd, ColEnd])
+            self.DataRange.append([row_begin, col_begin])
+            self.DataRange.append([row_end, col_end])
 
     def DataSelect(self):
         if len(self.DataRange):
-            RowBegin = self.DataRange[0][0]
-            RowEnd = self.DataRange[1][0]
-            ColBegin = self.DataRange[0][1]
-            ColEnd = self.DataRange[1][1]
-            if RowEnd < RowBegin:
-                stepRow = -1
-                beginRow = RowBegin
-                endRow = RowEnd - 1
+            row_begin = self.DataRange[0][0]
+            row_end = self.DataRange[1][0]
+            col_begin = self.DataRange[0][1]
+            col_end = self.DataRange[1][1]
+            if row_end < row_begin:
+                step_row = -1
+                begin_row = row_begin
+                end_row = row_end - 1
             else:
-                stepRow = 1
-                beginRow = RowBegin
-                endRow = RowEnd + 1
-            if ColEnd < ColBegin:
-                stepCol = -1
-                beginCol = ColBegin
-                endCol = ColEnd - 1
+                step_row = 1
+                begin_row = row_begin
+                end_row = row_end + 1
+            if col_end < col_begin:
+                step_col = -1
+                begin_col = col_begin
+                end_col = col_end - 1
             else:
-                stepCol = 1
-                beginCol = ColBegin
-                endCol = ColEnd + 1
+                step_col = 1
+                begin_col = col_begin
+                end_col = col_end + 1
             if self.check_Datavalue.isChecked():
-                for j in range(beginRow, endRow, stepRow):
-                    for i in range(beginCol, endCol, stepCol):
+                for j in range(begin_row, end_row, step_row):
+                    for i in range(begin_col, end_col, step_col):
                         if self.currentTable.item(j, i):
                             self.currentTable.item(j, i).setBackground(self.DataChooseColor)
 
