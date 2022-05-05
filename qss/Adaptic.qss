@@ -56,8 +56,8 @@ QMenuBar
 	color: #ffffff;
 	border-color: #051a39;
 	font-weight: bold;
-        font-family: MS Shell Dlg 2;
-        font-size: 10pt;
+    font-family: MS Shell Dlg 2;
+    font-size: 10pt;
 
 }
 
@@ -654,7 +654,8 @@ QTableView
 {
     background-color: #808080;
     border: 1px groove #333333;
-    color: #f0f0f0;
+    color: #101010;
+    color: #484c58;
 	font-weight: bold;
     gridline-color: #333333;
     outline : 0;
@@ -728,7 +729,6 @@ QHeaderView::section:disabled
 QHeaderView::section:checked
 {
     background-color: #00ff00;
-
 }
 
 

@@ -36,7 +36,7 @@ class ProgramWindow(QtWidgets.QMainWindow):
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
 
-        self.actionWindows = self.findChild(QtWidgets.QAction, "actionWindows")
+        self.actionDefault = self.findChild(QtWidgets.QAction, "actionDefault")
         self.actionAdaptic = self.findChild(QtWidgets.QAction, "actionAdaptic")
         self.actionCombinear = self.findChild(QtWidgets.QAction, "actionCombinear")
         self.actionDarkeum = self.findChild(QtWidgets.QAction, "actionDarkeum")
@@ -80,6 +80,8 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.settings_file = 'settings.ini'
         self.settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
         self.set_style(self.settings.value('theme_checked', type=str))
+        current_action = self.settings.value('theme_action_checked', type=str)
+        self.findChild(QtWidgets.QAction, current_action).setChecked(True)
         desktop = QtWidgets.QApplication.desktop()
         x = (desktop.width() - self.width()) // 2
         y = (desktop.height() - self.height()) // 2 - 30
@@ -104,7 +106,7 @@ class ProgramWindow(QtWidgets.QMainWindow):
 
         # action_groups
         self.themes = QtWidgets.QActionGroup(self)
-        self.themes.addAction(self.actionWindows)
+        self.themes.addAction(self.actionDefault)
         self.themes.addAction(self.actionAdaptic)
         self.themes.addAction(self.actionCombinear)
         self.themes.addAction(self.actionDarkeum)
@@ -119,7 +121,7 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
         self.actionOpen.triggered.connect(self.FileOpen)
         self.actionSave.triggered.connect(self.FileSave)
-        self.actionWindows.triggered.connect(lambda: self.set_style(''))
+        self.actionDefault.triggered.connect(lambda: self.set_style(''))
         self.actionAdaptic.triggered.connect(lambda: self.set_style('qss/Adaptic.qss'))
         self.actionCombinear.triggered.connect(lambda: self.set_style('qss/Combinear.qss'))
         self.actionDarkeum.triggered.connect(lambda: self.set_style('qss/Darkeum.qss'))
@@ -154,9 +156,14 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.SubWindowChange)
 
     def set_style(self, qss_file_name):
-        with open(qss_file_name, 'r') as qss_file:
-            with qss_file:
-                qss = qss_file.read()
+        if self.sender():
+            self.settings.setValue("theme_action_checked", self.sender().objectName())
+        try:
+            with open(qss_file_name, 'r') as qss_file:
+                with qss_file:
+                    qss = qss_file.read()
+        except (FileNotFoundError, OSError, IOError):
+            qss = ""
         QtWidgets.qApp.setStyleSheet(qss)
         self.settings.setValue("theme_checked", qss_file_name)
         self.settings.sync()
@@ -174,12 +181,14 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.statusbar.showMessage('Data loading from file...')
         self.LoadProgress = QtWidgets.QProgressBar()
         self.LoadProgress.setValue(0)
+        recent_directory = self.settings.value('recent_directory', type=str)
         file = QtWidgets.QFileDialog.getOpenFileName(parent=MainWindow,
                                                      caption="Open data file",
-                                                     directory=QtCore.QDir.currentPath(),
+                                                     directory=recent_directory,
                                                      filter="All files (*);;Text files (*.dat *.txt)",
                                                      initialFilter="Text files (*.dat *.txt)")
         if file[0]:
+            self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
             raw_path = r'{}'.format(file[0])
             f = open(raw_path, 'rt')
             line_number = 0

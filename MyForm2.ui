@@ -1353,7 +1353,7 @@
      <property name="title">
       <string>Themes</string>
      </property>
-     <addaction name="actionWindows"/>
+     <addaction name="actionDefault"/>
      <addaction name="actionAdaptic"/>
      <addaction name="actionCombinear"/>
      <addaction name="actionDarkeum"/>
@@ -1471,15 +1471,15 @@
     <string>Font...</string>
    </property>
   </action>
-  <action name="actionWindows">
+  <action name="actionDefault">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
-    <string>Windows</string>
+    <string>Default</string>
    </property>
   </action>
   <action name="actionAdaptic">

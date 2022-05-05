@@ -88,6 +88,7 @@ QMenu
 
 QMenu::item
 {
+    min-width : 100px;
     background-color: transparent;
     padding: 2px 20px 2px 20px;
 
@@ -497,6 +498,25 @@ QGroupBox::title
 
 }
 
+/*-----QTableView-----*/
+QTableView::item
+{
+    background-color: #131313;
+    color: #b78620;
+}
+
+QTableView::item:selected
+{
+    background-color: #b78620;
+    color: #131313;
+    border: 2px groove #fff;
+}
+
+QTableView::item:hover
+{
+    background-color: #b78620;
+    color: #131313;
+}
 
 /*-----QHeaderView-----*/
 QHeaderView::section
@@ -520,8 +540,8 @@ QHeaderView::section:disabled
 
 QHeaderView::section:checked
 {
-    background-color: qlineargradient(spread:repeat, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(60, 60, 60, 255),stop:1 rgba(50, 50, 50, 255));
-    color: #fff;
+    background-color: #fff;
+    color: #131313;
 
 }
 

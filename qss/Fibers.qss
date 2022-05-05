@@ -400,6 +400,25 @@ QGroupBox::title
 
 }
 
+/*-----QTableView-----*/
+QTableView::item
+{
+    background-color: #fff;
+    color: #8f1e28;
+}
+
+QTableView::item:selected
+{
+    background-color: #aa7e82;
+    color: #000;
+    border: 2px groove #8f1e28;
+}
+
+QTableView::item:hover
+{
+    background-color: #aa7e82;
+    color: #000;
+}
 
 /*-----QHeaderView-----*/
 QHeaderView::section
@@ -451,6 +470,11 @@ QHeaderView::section::horizontal
 
 }
 
+QHeaderView::section:checked
+{
+    background-color: #aa7e82;
+    color: #8f1e28;
+}
 
 /*-----QCalendarWidget-----*/
 QCalendarWidget QMenu 
