@@ -31,7 +31,7 @@ class ProgramWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
 
         # form loading
-        uic.loadUi('MyForm2.ui', self)
+        uic.loadUi('MyForm3.ui', self)
 
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
@@ -43,7 +43,6 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.actionDiplaytap = self.findChild(QtWidgets.QAction, "actionDiplaytap")
         self.actionEasyCode = self.findChild(QtWidgets.QAction, "actionEasyCode")
         self.actionFibers = self.findChild(QtWidgets.QAction, "actionFibers")
-        self.actionIntegrid = self.findChild(QtWidgets.QAction, "actionIntegrid")
         self.actionIrrorater = self.findChild(QtWidgets.QAction, "actionIrrorater")
         self.actionPerstfic = self.findChild(QtWidgets.QAction, "actionPerstfic")
         self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
@@ -52,8 +51,8 @@ class ProgramWindow(QtWidgets.QMainWindow):
 
         self.push_cancel = self.findChild(QtWidgets.QPushButton, "push_cancel")
 
-        self.combo_Xrowcol = self.findChild(QtWidgets.QComboBox, "combo_Xrowcol")
-        self.combo_Yrowcol = self.findChild(QtWidgets.QComboBox, "combo_Yrowcol")
+        # self.combo_Xrowcol = self.findChild(QtWidgets.QComboBox, "combo_Xrowcol")
+        # self.combo_Yrowcol = self.findChild(QtWidgets.QComboBox, "combo_Yrowcol")
         self.combo_Xnumber = self.findChild(QtWidgets.QComboBox, "combo_Xnumber")
         self.combo_Ynumber = self.findChild(QtWidgets.QComboBox, "combo_Ynumber")
         self.combo_Xbegin = self.findChild(QtWidgets.QComboBox, "combo_Xbegin")
@@ -65,9 +64,9 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.combo_Datacolbegin = self.findChild(QtWidgets.QComboBox, "combo_Datacolbegin")
         self.combo_Datacolend = self.findChild(QtWidgets.QComboBox, "combo_Datacolend")
 
-        self.check_Xvalue = self.findChild(QtWidgets.QCheckBox, "check_Xvalue")
-        self.check_Yvalue = self.findChild(QtWidgets.QCheckBox, "check_Yvalue")
-        self.check_Datavalue = self.findChild(QtWidgets.QCheckBox, "check_Datavalue")
+        # self.check_Xvalue = self.findChild(QtWidgets.QCheckBox, "check_Xvalue")
+        # self.check_Yvalue = self.findChild(QtWidgets.QCheckBox, "check_Yvalue")
+        # self.check_Datavalue = self.findChild(QtWidgets.QCheckBox, "check_Datavalue")
 
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
 
@@ -113,7 +112,6 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.themes.addAction(self.actionDiplaytap)
         self.themes.addAction(self.actionEasyCode)
         self.themes.addAction(self.actionFibers)
-        self.themes.addAction(self.actionIntegrid)
         self.themes.addAction(self.actionIrrorater)
         self.themes.addAction(self.actionPerstfic)
 
@@ -133,26 +131,26 @@ class ProgramWindow(QtWidgets.QMainWindow):
 
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
 
-        self.combo_Xrowcol.currentIndexChanged.connect(self.XRowColChange)
-        self.combo_Yrowcol.currentIndexChanged.connect(self.YRowColChange)
-        self.combo_Xnumber.currentIndexChanged.connect(self.XChangeState)
-        self.combo_Ynumber.currentIndexChanged.connect(self.YChangeState)
-        self.combo_Xbegin.currentIndexChanged.connect(self.XChangeState)
-        self.combo_Xend.currentIndexChanged.connect(self.XChangeState)
-        self.combo_Ybegin.currentIndexChanged.connect(self.YChangeState)
-        self.combo_Yend.currentIndexChanged.connect(self.YChangeState)
-        self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
-        self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
-        self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
-        self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
+        # self.combo_Xrowcol.currentIndexChanged.connect(self.XRowColChange)
+        # self.combo_Yrowcol.currentIndexChanged.connect(self.YRowColChange)
+#        self.combo_Xnumber.currentIndexChanged.connect(self.XChangeState)
+#         self.combo_Ynumber.currentIndexChanged.connect(self.YChangeState)
+#         self.combo_Xbegin.currentIndexChanged.connect(self.XChangeState)
+#         self.combo_Xend.currentIndexChanged.connect(self.XChangeState)
+#         self.combo_Ybegin.currentIndexChanged.connect(self.YChangeState)
+#         self.combo_Yend.currentIndexChanged.connect(self.YChangeState)
+#         self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
+#         self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
+#         self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
+#         self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
 
-        self.check_Xvalue.stateChanged.connect(self.XChangeState)
-        self.check_Yvalue.stateChanged.connect(self.YChangeState)
-        self.check_Datavalue.stateChanged.connect(self.DataChangeState)
-        self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
-        self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
-        self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
-        self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
+        # self.check_Xvalue.stateChanged.connect(self.XChangeState)
+        # self.check_Yvalue.stateChanged.connect(self.YChangeState)
+        # self.check_Datavalue.stateChanged.connect(self.DataChangeState)
+        # self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
+        # self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
+        # self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
+        # self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
         self.mdiArea.subWindowActivated.connect(self.SubWindowChange)
 
     def set_style(self, qss_file_name):
@@ -273,12 +271,12 @@ class ProgramWindow(QtWidgets.QMainWindow):
                     ii = int(i) - 1
                     if self.currentTable.item(jj, ii):
                         self.currentTable.item(jj, ii).setBackground(background_color)
-        if self.check_Datavalue.isChecked():
-            self.DataSelect()
-        if self.check_Xvalue.isChecked():
-            self.XSelect()
-        if self.check_Yvalue.isChecked():
-            self.YSelect()
+        # if self.check_Datavalue.isChecked():
+        #     self.DataSelect()
+        # if self.check_Xvalue.isChecked():
+        #     self.XSelect()
+        # if self.check_Yvalue.isChecked():
+        #     self.YSelect()
         self.unsetCursor()
 
     def XSelect(self):
@@ -324,18 +322,18 @@ class ProgramWindow(QtWidgets.QMainWindow):
             self.XRange[0] = self.combo_Xnumber.currentIndex()
             self.XRange[1] = self.combo_Xbegin.currentIndex()
             self.XRange[2] = self.combo_Xend.currentIndex()
-            if self.combo_Xrowcol.currentIndex():
-                self.XRange[3] = False
-            else:
-                self.XRange[3] = True
+            # if self.combo_Xrowcol.currentIndex():
+            #     self.XRange[3] = False
+            # else:
+            #     self.XRange[3] = True
         else:
             self.XRange.append(self.combo_Xnumber.currentIndex())
             self.XRange.append(self.combo_Xbegin.currentIndex())
             self.XRange.append(self.combo_Xend.currentIndex())
-            if self.combo_Xrowcol.currentIndex():
-                self.XRange.append(False)
-            else:
-                self.XRange.append(True)
+            # if self.combo_Xrowcol.currentIndex():
+            #     self.XRange.append(False)
+            # else:
+            #     self.XRange.append(True)
 
     def YRangeInit(self):
         if len(self.YRange):
@@ -350,28 +348,28 @@ class ProgramWindow(QtWidgets.QMainWindow):
             self.YRange.append(self.combo_Ynumber.currentIndex())
             self.YRange.append(self.combo_Ybegin.currentIndex())
             self.YRange.append(self.combo_Yend.currentIndex())
-            if self.combo_Yrowcol.currentIndex():
-                self.YRange.append(False)
-            else:
-                self.YRange.append(True)
+            # if self.combo_Yrowcol.currentIndex():
+            #     self.YRange.append(False)
+            # else:
+            #     self.YRange.append(True)
 
     def XRowColChange(self):
         self.XRange = []
         self.combo_Xnumber.clear()
         self.combo_Xbegin.clear()
         self.combo_Xend.clear()
-        if self.combo_Xrowcol.currentIndex():
-            self.label_Xrowcol.setText('Columns from')
-            self.combo_Xnumber.addItems(self.ListRowNumber)
-            self.combo_Xbegin.addItems(self.ListColNumber)
-            self.combo_Xend.addItems(self.ListColNumber)
-            self.combo_Xend.setCurrentIndex(len(self.ListColNumber) - 1)
-        else:
-            self.label_Xrowcol.setText('Rows from')
-            self.combo_Xnumber.addItems(self.ListColNumber)
-            self.combo_Xbegin.addItems(self.ListRowNumber)
-            self.combo_Xend.addItems(self.ListRowNumber)
-            self.combo_Xend.setCurrentIndex(len(self.ListRowNumber) - 1)
+        # if self.combo_Xrowcol.currentIndex():
+        #     self.label_Xrowcol.setText('Columns from')
+        #     self.combo_Xnumber.addItems(self.ListRowNumber)
+        #     self.combo_Xbegin.addItems(self.ListColNumber)
+        #     self.combo_Xend.addItems(self.ListColNumber)
+        #     self.combo_Xend.setCurrentIndex(len(self.ListColNumber) - 1)
+        # else:
+        #     self.label_Xrowcol.setText('Rows from')
+        #     self.combo_Xnumber.addItems(self.ListColNumber)
+        #     self.combo_Xbegin.addItems(self.ListRowNumber)
+        #     self.combo_Xend.addItems(self.ListRowNumber)
+        #     self.combo_Xend.setCurrentIndex(len(self.ListRowNumber) - 1)
         self.XRangeInit()
 
     def YRowColChange(self):
@@ -379,43 +377,43 @@ class ProgramWindow(QtWidgets.QMainWindow):
         self.combo_Ynumber.clear()
         self.combo_Ybegin.clear()
         self.combo_Yend.clear()
-        if self.combo_Yrowcol.currentIndex():
-            self.label_Yrowcol.setText('Rows from')
-            self.combo_Ynumber.addItems(self.ListColNumber)
-            self.combo_Ybegin.addItems(self.ListRowNumber)
-            self.combo_Yend.addItems(self.ListRowNumber)
-            self.combo_Yend.setCurrentIndex(len(self.ListRowNumber) - 1)
-        else:
-            self.label_Yrowcol.setText('Columns from')
-            self.combo_Ynumber.addItems(self.ListRowNumber)
-            self.combo_Ybegin.addItems(self.ListColNumber)
-            self.combo_Yend.addItems(self.ListColNumber)
-            self.combo_Yend.setCurrentIndex(len(self.ListColNumber) - 1)
+        # if self.combo_Yrowcol.currentIndex():
+        #     self.label_Yrowcol.setText('Rows from')
+        #     self.combo_Ynumber.addItems(self.ListColNumber)
+        #     self.combo_Ybegin.addItems(self.ListRowNumber)
+        #     self.combo_Yend.addItems(self.ListRowNumber)
+        #     self.combo_Yend.setCurrentIndex(len(self.ListRowNumber) - 1)
+        # else:
+        #     self.label_Yrowcol.setText('Columns from')
+        #     self.combo_Ynumber.addItems(self.ListRowNumber)
+        #     self.combo_Ybegin.addItems(self.ListColNumber)
+        #     self.combo_Yend.addItems(self.ListColNumber)
+        #     self.combo_Yend.setCurrentIndex(len(self.ListColNumber) - 1)
         self.YRangeInit()
 
-    def XChangeState(self):
-        if self.currentTable.rowCount():
-            if self.check_Xvalue.isChecked():
-                self.XRangeInit()
-            else:
-                self.XRange = []
-            self.TableRepaint()
+    # def XChangeState(self):
+    #     if self.currentTable.rowCount():
+    #         if self.check_Xvalue.isChecked():
+    #             self.XRangeInit()
+    #         else:
+    #             self.XRange = []
+    #         self.TableRepaint()
 
-    def YChangeState(self):
-        if self.currentTable.rowCount():
-            if self.check_Yvalue.isChecked():
-                self.YRangeInit()
-            else:
-                self.YRange = []
-            self.TableRepaint()
-
-    def DataChangeState(self):
-        if self.currentTable.rowCount():
-            if self.check_Datavalue.isChecked():
-                self.DataRangeInit()
-            else:
-                self.DataRange = []
-            self.TableRepaint()
+    # def YChangeState(self):
+    #     if self.currentTable.rowCount():
+    #         if self.check_Yvalue.isChecked():
+    #             self.YRangeInit()
+    #         else:
+    #             self.YRange = []
+    #         self.TableRepaint()
+    #
+    # def DataChangeState(self):
+    #     if self.currentTable.rowCount():
+    #         if self.check_Datavalue.isChecked():
+    #             self.DataRangeInit()
+    #         else:
+    #             self.DataRange = []
+    #         self.TableRepaint()
 
     def DataRangeInit(self):
         row_begin = self.combo_Datarowbegin.currentIndex()
@@ -451,11 +449,11 @@ class ProgramWindow(QtWidgets.QMainWindow):
                 step_col = 1
                 begin_col = col_begin
                 end_col = col_end + 1
-            if self.check_Datavalue.isChecked():
-                for j in range(begin_row, end_row, step_row):
-                    for i in range(begin_col, end_col, step_col):
-                        if self.currentTable.item(j, i):
-                            self.currentTable.item(j, i).setBackground(self.DataChooseColor)
+            # if self.check_Datavalue.isChecked():
+            #     for j in range(begin_row, end_row, step_row):
+            #         for i in range(begin_col, end_col, step_col):
+            #             if self.currentTable.item(j, i):
+            #                 self.currentTable.item(j, i).setBackground(self.DataChooseColor)
 
     def SubWindowChange(self):
         self.subWindow = self.mdiArea.activeSubWindow()

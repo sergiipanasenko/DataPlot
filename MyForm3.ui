@@ -1326,6 +1326,22 @@
     <property name="title">
      <string>Settings</string>
     </property>
+    <widget class="QMenu" name="menuThemes">
+     <property name="title">
+      <string>Themes</string>
+     </property>
+     <addaction name="actionDefault"/>
+     <addaction name="actionAdaptic"/>
+     <addaction name="actionCombinear"/>
+     <addaction name="actionDarkeum"/>
+     <addaction name="actionDiplaytap"/>
+     <addaction name="actionEasyCode"/>
+     <addaction name="actionFibers"/>
+     <addaction name="actionIrrorater"/>
+     <addaction name="actionPerstfic"/>
+    </widget>
+    <addaction name="actionFont"/>
+    <addaction name="menuThemes"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1431,6 +1447,87 @@
   <action name="actionCascaded">
    <property name="text">
     <string>Cascaded</string>
+   </property>
+  </action>
+  <action name="actionFont">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icons/font-icon.png</normaloff>Icons/font-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Font...</string>
+   </property>
+  </action>
+  <action name="actionDefault">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+  <action name="actionAdaptic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Adaptic</string>
+   </property>
+  </action>
+  <action name="actionCombinear">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Combinear</string>
+   </property>
+  </action>
+  <action name="actionDarkeum">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Darkeum</string>
+   </property>
+  </action>
+  <action name="actionDiplaytap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Diplaytap</string>
+   </property>
+  </action>
+  <action name="actionEasyCode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>EasyCode</string>
+   </property>
+  </action>
+  <action name="actionFibers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fibers</string>
+   </property>
+  </action>
+  <action name="actionIrrorater">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Irrorater</string>
+   </property>
+  </action>
+  <action name="actionPerstfic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Perstfic</string>
    </property>
   </action>
  </widget>
