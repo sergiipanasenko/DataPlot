@@ -1452,7 +1452,7 @@
   <action name="actionFont">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/font-icon.png</normaloff>Icons/font-icon.png</iconset>
+     <normaloff>Icons/App-fonts-icon.png</normaloff>Icons/App-fonts-icon.png</iconset>
    </property>
    <property name="text">
     <string>Font...</string>
