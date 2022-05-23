@@ -110,7 +110,7 @@
               <locale language="English" country="UnitedStates"/>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="tab_5">
               <attribute name="title">
@@ -1288,10 +1288,19 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionExcel_file"/>
    <addaction name="actionBinary_file"/>
+   <addaction name="action_HDF5_file"/>
    <addaction name="actionSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionFont"/>
+   <addaction name="separator"/>
+   <addaction name="actionTiled"/>
+   <addaction name="actionCascaded"/>
+   <addaction name="separator"/>
+   <addaction name="actionAbout"/>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1310,13 +1319,21 @@
      <string>File</string>
     </property>
     <widget class="QMenu" name="menuImport">
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
      <property name="title">
       <string>Import</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>New_Icons/import-1.png</normaloff>New_Icons/import-1.png</iconset>
      </property>
      <addaction name="actionExcel_file"/>
      <addaction name="actionBinary_file"/>
      <addaction name="action_HDF5_file"/>
     </widget>
+    <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuImport"/>
     <addaction name="actionSave"/>
@@ -1329,6 +1346,10 @@
     <widget class="QMenu" name="menuThemes">
      <property name="title">
       <string>Themes</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>New_Icons/themes.png</normaloff>New_Icons/themes.png</iconset>
      </property>
      <addaction name="actionDefault"/>
      <addaction name="actionAdaptic"/>
@@ -1365,7 +1386,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/open-file-icon.png</normaloff>Icons/open-file-icon.png</iconset>
+     <normaloff>New_Icons/folder.png</normaloff>New_Icons/folder.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open data file...</string>
@@ -1377,7 +1398,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/information-icon.png</normaloff>Icons/information-icon.png</iconset>
+     <normaloff>New_Icons/info.png</normaloff>New_Icons/info.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About...</string>
@@ -1386,7 +1407,7 @@
   <action name="actionExcel_file">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/Excel-icon.png</normaloff>Icons/Excel-icon.png</iconset>
+     <normaloff>New_Icons/excel.png</normaloff>New_Icons/excel.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Excel file...</string>
@@ -1398,7 +1419,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/Save-icon.png</normaloff>Icons/Save-icon.png</iconset>
+     <normaloff>New_Icons/diskette.png</normaloff>New_Icons/diskette.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save...</string>
@@ -1413,7 +1434,7 @@
   <action name="actionExit">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/Windows-Close-Program-icon.png</normaloff>Icons/Windows-Close-Program-icon.png</iconset>
+     <normaloff>New_Icons/exit.png</normaloff>New_Icons/exit.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Exit</string>
@@ -1425,26 +1446,41 @@
   <action name="actionBinary_file">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/binary-icon.png</normaloff>Icons/binary-icon.png</iconset>
+     <normaloff>New_Icons/binary-code.png</normaloff>New_Icons/binary-code.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;LoopedData file...</string>
+    <string>&amp;Looped data file...</string>
    </property>
    <property name="toolTip">
-    <string>Import Binary file</string>
+    <string>Import Looped data file</string>
    </property>
   </action>
   <action name="action_HDF5_file">
+   <property name="icon">
+    <iconset>
+     <normaloff>New_Icons/document.png</normaloff>New_Icons/document.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;HDF5 file...</string>
    </property>
+   <property name="toolTip">
+    <string>Import HDF5 file</string>
+   </property>
   </action>
   <action name="actionTiled">
+   <property name="icon">
+    <iconset>
+     <normaloff>New_Icons/tiles.png</normaloff>New_Icons/tiles.png</iconset>
+   </property>
    <property name="text">
     <string>Tiled</string>
    </property>
   </action>
   <action name="actionCascaded">
+   <property name="icon">
+    <iconset>
+     <normaloff>New_Icons/cascaded.png</normaloff>New_Icons/cascaded.png</iconset>
+   </property>
    <property name="text">
     <string>Cascaded</string>
    </property>
@@ -1452,7 +1488,7 @@
   <action name="actionFont">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/App-fonts-icon.png</normaloff>Icons/App-fonts-icon.png</iconset>
+     <normaloff>New_Icons/Font-ico.png</normaloff>New_Icons/Font-ico.png</iconset>
    </property>
    <property name="text">
     <string>Font...</string>
@@ -1528,6 +1564,18 @@
    </property>
    <property name="text">
     <string>Perstfic</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset>
+     <normaloff>New_Icons/new.png</normaloff>New_Icons/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New data file...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>

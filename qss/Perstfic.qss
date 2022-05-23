@@ -120,6 +120,16 @@ QListView::item:!selected:hover{
 	
 }
 
+QTabBar::tab
+{
+	background-color: transparent;
+}
+
+QTabBar::tab:selected
+{
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(147, 194, 30, 255),stop:1 rgba(78, 149, 47, 255));
+    background-color: #bfbfbf;
+}
 
 /*-----QScrollBar-----*/
 QScrollBar:vertical 
