@@ -278,7 +278,7 @@ QComboBox::drop-down
 
 QComboBox::down-arrow
 {
-    image: url(qss/images/arrow_down.png);
+    image: url(UI/qss/images/arrow_down.png);
     width: 8px;
     height: 8px;
 
@@ -330,7 +330,7 @@ QCalendarWidget QSpinBox::up-button:pressed
 QDoubleSpinBox::up-arrow,
 QCalendarWidget QSpinBox::up-arrow
 {
-    image: url(qss/images/arrow_up.png);
+    image: url(UI/qss/images/arrow_up.png);
     width: 7px;
     height: 7px;
 
@@ -369,7 +369,7 @@ QCalendarWidget QSpinBox::down-button:pressed
 QDoubleSpinBox::down-arrow,
 QCalendarWidget QSpinBox::down-arrow
 {
-    image: url(qss/images/arrow_down.png);
+    image: url(UI/qss/images/arrow_down.png);
     width: 7px;
     height: 7px;
 
@@ -658,7 +658,7 @@ QCheckBox::indicator
 
 QCheckBox::indicator:checked
 {
-    image:url("qss/images/checkbox.png");
+    image:url("UI/qss/images/checkbox.png");
 	background-color: #cd70ff;
     border: 1px solid #3a546e;
 
