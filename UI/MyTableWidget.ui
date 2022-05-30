@@ -32,10 +32,9 @@
       <number>1</number>
      </property>
      <property name="columnCount">
-      <number>2</number>
+      <number>1</number>
      </property>
      <row/>
-     <column/>
      <column/>
     </widget>
    </item>

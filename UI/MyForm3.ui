@@ -110,7 +110,7 @@
               <locale language="English" country="UnitedStates"/>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <widget class="QWidget" name="tab_5">
               <attribute name="title">
@@ -266,7 +266,7 @@
               </attribute>
               <layout class="QGridLayout" name="gridLayout_8">
                <item row="0" column="2">
-                <widget class="QLabel" name="label_Xrowto_2">
+                <widget class="QLabel" name="label_Yrowto">
                  <property name="text">
                   <string>to</string>
                  </property>
@@ -1205,7 +1205,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="push_further">
+             <widget class="QPushButton" name="push_next">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1281,6 +1281,12 @@
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>

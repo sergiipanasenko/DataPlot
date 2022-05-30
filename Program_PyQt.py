@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
-from MyForms import MyForm3
+from SP_Forms import MyForm3
 
 
 class ProgramWindow(MyForm3):

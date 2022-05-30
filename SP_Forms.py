@@ -1,10 +1,32 @@
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
 
 
-class TableSubWindow(QtWidgets.QWidget):
+class MyAbstractForm(QtCore.QObject):
+    def __init__(self):
+        super().__init__()
+
+        # settings
+        self.settings_file = 'settings.ini'
+        self.settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
+
+    def set_style(self, qss_file_name):
+        if self.sender():
+            self.settings.setValue("theme_action_checked", self.sender().objectName())
+        try:
+            with open(qss_file_name, 'r') as qss_file:
+                with qss_file:
+                    qss = qss_file.read()
+        except (FileNotFoundError, OSError, IOError):
+            qss = ""
+        QtWidgets.qApp.setStyleSheet(qss)
+        self.settings.setValue("theme_checked", qss_file_name)
+        self.settings.sync()
+
+
+class MyTableSubWindow(QtWidgets.QWidget, MyAbstractForm):
     def __init__(self):
         # parent initialisation
-        QtWidgets.QWidget.__init__(self)
+        super().__init__()
 
         # UI loading
         uic.loadUi('UI/MyTableWidget.ui', self)
@@ -15,7 +37,7 @@ class TableSubWindow(QtWidgets.QWidget):
         self.table = None
 
 
-class TabSubWindow(QtWidgets.QWidget):
+class MyTabSubWindow(QtWidgets.QWidget, MyAbstractForm):
     def __init__(self):
 
         # parent initialisation
@@ -27,11 +49,10 @@ class TabSubWindow(QtWidgets.QWidget):
         # explicit definition of the class attributes
 
 
-class MyForm3(QtWidgets.QMainWindow):
+class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def __init__(self):
-
         # parent initialisation
-        QtWidgets.QMainWindow.__init__(self)
+        super().__init__()
 
         # UI loading
         uic.loadUi('UI/MyForm3.ui', self)
@@ -48,39 +69,42 @@ class MyForm3(QtWidgets.QMainWindow):
         self.actionFibers = self.findChild(QtWidgets.QAction, "actionFibers")
         self.actionIrrorater = self.findChild(QtWidgets.QAction, "actionIrrorater")
         self.actionPerstfic = self.findChild(QtWidgets.QAction, "actionPerstfic")
-        self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
+        self.actionNew = self.findChild(QtWidgets.QAction, "actionNew")
         self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
         self.actionSave = self.findChild(QtWidgets.QAction, "actionSave")
+        self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
+        self.actionFont = self.findChild(QtWidgets.QAction, "actionFont")
+        self.actionTiled = self.findChild(QtWidgets.QAction, "actionTiled")
+        self.actionCascaded = self.findChild(QtWidgets.QAction, "actionCascaded")
+        self.actionAbout = self.findChild(QtWidgets.QAction, "actionAbout")
 
+        self.push_add = self.findChild(QtWidgets.QPushButton, "push_add")
+        self.push_remove = self.findChild(QtWidgets.QPushButton, "push_remove")
+        self.push_reset = self.findChild(QtWidgets.QPushButton, "push_reset")
+        self.push_next = self.findChild(QtWidgets.QPushButton, "push_next")
         self.push_cancel = self.findChild(QtWidgets.QPushButton, "push_cancel")
 
-        # self.combo_Xrowcol = self.findChild(QtWidgets.QComboBox, "combo_Xrowcol")
-        # self.combo_Yrowcol = self.findChild(QtWidgets.QComboBox, "combo_Yrowcol")
-        self.combo_Xnumber = self.findChild(QtWidgets.QComboBox, "combo_Xnumber")
-        self.combo_Ynumber = self.findChild(QtWidgets.QComboBox, "combo_Ynumber")
-        self.combo_Xbegin = self.findChild(QtWidgets.QComboBox, "combo_Xbegin")
-        self.combo_Xend = self.findChild(QtWidgets.QComboBox, "combo_Xend")
-        self.combo_Ybegin = self.findChild(QtWidgets.QComboBox, "combo_Ybegin")
-        self.combo_Yend = self.findChild(QtWidgets.QComboBox, "combo_Yend")
-        self.combo_Datarowbegin = self.findChild(QtWidgets.QComboBox, "combo_Datarowbegin")
-        self.combo_Datarowend = self.findChild(QtWidgets.QComboBox, "combo_Datarowend")
-        self.combo_Datacolbegin = self.findChild(QtWidgets.QComboBox, "combo_Datacolbegin")
-        self.combo_Datacolend = self.findChild(QtWidgets.QComboBox, "combo_Datacolend")
-
-        # self.check_Xvalue = self.findChild(QtWidgets.QCheckBox, "check_Xvalue")
-        # self.check_Yvalue = self.findChild(QtWidgets.QCheckBox, "check_Yvalue")
-        # self.check_Datavalue = self.findChild(QtWidgets.QCheckBox, "check_Datavalue")
+        self.combo_Xcolfrom = self.findChild(QtWidgets.QComboBox, "combo_Xcolfrom")
+        self.combo_Xcolto = self.findChild(QtWidgets.QComboBox, "combo_Xcolto")
+        self.combo_Xrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Xrowfrom")
+        self.combo_Xrowto = self.findChild(QtWidgets.QComboBox, "combo_Xrowto")
+        self.combo_Ycolfrom = self.findChild(QtWidgets.QComboBox, "combo_Ycolfrom")
+        self.combo_Ycolto = self.findChild(QtWidgets.QComboBox, "combo_Ycolto")
+        self.combo_Yrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Yrowfrom")
+        self.combo_Yrowto = self.findChild(QtWidgets.QComboBox, "combo_Yrowto")
+        self.combo_Ncolfrom = self.findChild(QtWidgets.QComboBox, "combo_Ncolfrom")
+        self.combo_Ncolto = self.findChild(QtWidgets.QComboBox, "combo_Ncolto")
+        self.combo_Nrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Nrowfrom")
+        self.combo_Nrowto = self.findChild(QtWidgets.QComboBox, "combo_Nrowto")
+        self.combo_Datacolfrom = self.findChild(QtWidgets.QComboBox, "combo_Xcolfrom")
+        self.combo_Datacolto = self.findChild(QtWidgets.QComboBox, "combo_Xcolto")
+        self.combo_Datarowfrom = self.findChild(QtWidgets.QComboBox, "combo_Xrowfrom")
+        self.combo_Datarowto = self.findChild(QtWidgets.QComboBox, "combo_Xrowto")
+        self.combo_wise = self.findChild(QtWidgets.QComboBox, "combo_wise")
 
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
 
-        self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
-        self.label_totalcolumnvalue = self.findChild(QtWidgets.QLabel, "label_totalcolumnvalue")
-        self.label_Xrowcol = self.findChild(QtWidgets.QLabel, "label_Xrowcol")
-        self.label_Yrowcol = self.findChild(QtWidgets.QLabel, "label_Yrowcol")
-
         # settings
-        self.settings_file = 'settings.ini'
-        self.settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
         self.set_style(self.settings.value('theme_checked', type=str))
         current_action = self.settings.value('theme_action_checked', type=str)
         self.findChild(QtWidgets.QAction, current_action).setChecked(True)
@@ -107,8 +131,9 @@ class MyForm3(QtWidgets.QMainWindow):
 
         # connections
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
-        self.actionOpen.triggered.connect(self.FileOpen)
-        self.actionSave.triggered.connect(self.FileSave)
+        self.actionNew.triggered.connect(self.create_new_file)
+        self.actionOpen.triggered.connect(self.open_data_file)
+        self.actionSave.triggered.connect(self.save_file)
         self.actionDefault.triggered.connect(lambda: self.set_style(''))
         self.actionAdaptic.triggered.connect(lambda: self.set_style('UI/qss/Adaptic.qss'))
         self.actionCombinear.triggered.connect(lambda: self.set_style('UI/qss/Combinear.qss'))
@@ -144,29 +169,32 @@ class MyForm3(QtWidgets.QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.sub_window_change)
 
         # new fields
-        self.subWindow = QtWidgets.QMdiSubWindow()
-        self.LoadProgress = QtWidgets.QProgressBar()
+        self.sub_window = QtWidgets.QMdiSubWindow()
+        self.sub_window_number = 0
+        self.LoadbProgress = QtWidgets.QProgressBar()
         self.LabelX = QtWidgets.QLabel()
         self.LabelY = QtWidgets.QLabel()
         self.LabelData = QtWidgets.QLabel()
-        self.subWindow = QtWidgets.QMdiSubWindow()
-        self.currentTable = QtWidgets.QTableWidget()
+        self.current_table = QtWidgets.QTableWidget()
 
-    def set_style(self, qss_file_name):
-        if self.sender():
-            self.settings.setValue("theme_action_checked", self.sender().objectName())
-        try:
-            with open(qss_file_name, 'r') as qss_file:
-                with qss_file:
-                    qss = qss_file.read()
-        except (FileNotFoundError, OSError, IOError):
-            qss = ""
-        QtWidgets.qApp.setStyleSheet(qss)
-        self.settings.setValue("theme_checked", qss_file_name)
-        self.settings.sync()
+    def create_new_file(self):
+        self.statusbar.showMessage('Creating new data file...')
+        new_sub_window = MyTableSubWindow()
+        self.sub_window = new_sub_window
+        self.sub_window_number += 1
+        self.sub_window.setObjectName('sub-window ' + str(self.sub_window_number))
+        self.sub_window.setWindowTitle('Data ' + str(self.sub_window_number))
+        self.sub_window.setWindowIcon(QtGui.QIcon("UI/New_Icons/add-file.png"))
+        self.current_table = self.sub_window.table
+        self.mdiArea.addSubWindow(self.sub_window)
+        self.sub_window.show()
+
+    def open_data_file(self):
+        pass
+
+    def save_file(self):
+        pass
 
     def sub_window_change(self):
         self.subWindow = self.mdiArea.activeSubWindow()
 #        self.currentTable = self.subWindow.widget().table
-
-
