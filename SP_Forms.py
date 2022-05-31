@@ -32,14 +32,11 @@ class MyTableSubWindow(QtWidgets.QWidget, MyAbstractForm):
         uic.loadUi('UI/MyTableWidget.ui', self)
 
         # explicit definition of the class attributes
-
-        # new fields
-        self.table = None
+        self.table = self.findChild(QtWidgets.QTableWidget, 'table')
 
 
 class MyTabSubWindow(QtWidgets.QWidget, MyAbstractForm):
     def __init__(self):
-
         # parent initialisation
         QtWidgets.QWidget.__init__(self)
 
@@ -56,6 +53,16 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         # UI loading
         uic.loadUi('UI/MyForm3.ui', self)
+
+        # new fields
+        self.sub_window = QtWidgets.QMdiSubWindow()
+        self.sub_window_number = 0
+        self.sub_window_amount = 0
+        self.LoadbProgress = QtWidgets.QProgressBar()
+        self.LabelX = QtWidgets.QLabel()
+        self.LabelY = QtWidgets.QLabel()
+        self.LabelData = QtWidgets.QLabel()
+        self.current_table = QtWidgets.QTableWidget()
 
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
@@ -77,6 +84,12 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionTiled = self.findChild(QtWidgets.QAction, "actionTiled")
         self.actionCascaded = self.findChild(QtWidgets.QAction, "actionCascaded")
         self.actionAbout = self.findChild(QtWidgets.QAction, "actionAbout")
+        self.actionRow_above = self.findChild(QtWidgets.QAction, "actionRow_above")
+        self.actionRow_below = self.findChild(QtWidgets.QAction, "actionRow_below")
+        self.actionColumn_left = self.findChild(QtWidgets.QAction, "actionColumn_left")
+        self.actionColumn_right = self.findChild(QtWidgets.QAction, "actionColumn_right")
+        self.actionRow = self.findChild(QtWidgets.QAction, "actionRow")
+        self.actionColumn = self.findChild(QtWidgets.QAction, "actionColumn")
 
         self.push_add = self.findChild(QtWidgets.QPushButton, "push_add")
         self.push_remove = self.findChild(QtWidgets.QPushButton, "push_remove")
@@ -104,6 +117,9 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
 
+        self.menuAdd = self.findChild(QtWidgets.QMenu, "menuAdd")
+        self.menuRemove = self.findChild(QtWidgets.QMenu, "menuRemove")
+
         # settings
         self.set_style(self.settings.value('theme_checked', type=str))
         current_action = self.settings.value('theme_action_checked', type=str)
@@ -117,7 +133,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.YChooseColor = QtGui.QColor('blue')
         self.DataChooseColor = QtGui.QColor('yellow')
 
-        # action_groups
+        # action_group1
         self.themes = QtWidgets.QActionGroup(self)
         self.themes.addAction(self.actionDefault)
         self.themes.addAction(self.actionAdaptic)
@@ -129,11 +145,17 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.themes.addAction(self.actionIrrorater)
         self.themes.addAction(self.actionPerstfic)
 
+        # action_group2
+        self.layout = QtWidgets.QActionGroup(self)
+        self.layout.addAction(self.actionTiled)
+        self.layout.addAction(self.actionCascaded)
+
         # connections
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
         self.actionNew.triggered.connect(self.create_new_file)
         self.actionOpen.triggered.connect(self.open_data_file)
         self.actionSave.triggered.connect(self.save_file)
+
         self.actionDefault.triggered.connect(lambda: self.set_style(''))
         self.actionAdaptic.triggered.connect(lambda: self.set_style('UI/qss/Adaptic.qss'))
         self.actionCombinear.triggered.connect(lambda: self.set_style('UI/qss/Combinear.qss'))
@@ -143,6 +165,22 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionFibers.triggered.connect(lambda: self.set_style('UI/qss/Fibers.qss'))
         self.actionIrrorater.triggered.connect(lambda: self.set_style('UI/qss/Irrorater.qss'))
         self.actionPerstfic.triggered.connect(lambda: self.set_style('UI/qss/Perstfic.qss'))
+
+        self.actionTiled.triggered.connect(self.mdiArea.tileSubWindows)
+        self.actionCascaded.triggered.connect(self.mdiArea.cascadeSubWindows)
+
+        self.actionRow_above.triggered \
+            .connect(lambda: self.current_table.insertRow(self.current_table.currentRow()))
+        self.actionRow_below.triggered \
+            .connect(lambda: self.current_table.insertRow(self.current_table.currentRow() + 1))
+        self.actionColumn_left.triggered \
+            .connect(lambda: self.current_table.insertColumn(self.current_table.currentColumn()))
+        self.actionColumn_right.triggered \
+            .connect(lambda: self.current_table.insertColumn(self.current_table.currentColumn() + 1))
+        self.actionRow.triggered \
+            .connect(lambda: self.current_table.removeRow(self.current_table.currentRow()))
+        self.actionColumn.triggered \
+            .connect(lambda: self.current_table.removeColumn(self.current_table.currentRow()))
 
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
 
@@ -168,20 +206,21 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         # self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
         self.mdiArea.subWindowActivated.connect(self.sub_window_change)
 
-        # new fields
-        self.sub_window = QtWidgets.QMdiSubWindow()
-        self.sub_window_number = 0
-        self.LoadbProgress = QtWidgets.QProgressBar()
-        self.LabelX = QtWidgets.QLabel()
-        self.LabelY = QtWidgets.QLabel()
-        self.LabelData = QtWidgets.QLabel()
-        self.current_table = QtWidgets.QTableWidget()
-
     def create_new_file(self):
+        if not self.menuAdd.isEnabled():
+            self.menuAdd.setEnabled(True)
+            self.actionRow_above.setEnabled(True)
+            self.actionRow_below.setEnabled(True)
+            self.actionColumn_left.setEnabled(True)
+            self.actionColumn_right.setEnabled(True)
+            self.menuRemove.setEnabled(True)
+            self.actionRow.setEnabled(True)
+            self.actionColumn.setEnabled(True)
         self.statusbar.showMessage('Creating new data file...')
         new_sub_window = MyTableSubWindow()
         self.sub_window = new_sub_window
         self.sub_window_number += 1
+        self.sub_window_amount += 1
         self.sub_window.setObjectName('sub-window ' + str(self.sub_window_number))
         self.sub_window.setWindowTitle('Data ' + str(self.sub_window_number))
         self.sub_window.setWindowIcon(QtGui.QIcon("UI/New_Icons/add-file.png"))
@@ -196,5 +235,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         pass
 
     def sub_window_change(self):
-        self.subWindow = self.mdiArea.activeSubWindow()
-#        self.currentTable = self.subWindow.widget().table
+        self.sub_window = self.mdiArea.activeSubWindow()
+        table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table')
+        self.current_table = table
