@@ -180,7 +180,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionRow.triggered \
             .connect(lambda: self.current_table.removeRow(self.current_table.currentRow()))
         self.actionColumn.triggered \
-            .connect(lambda: self.current_table.removeColumn(self.current_table.currentRow()))
+            .connect(lambda: self.current_table.removeColumn(self.current_table.currentColumn()))
 
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
 
