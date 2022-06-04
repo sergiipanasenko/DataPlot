@@ -110,9 +110,9 @@
               <locale language="English" country="UnitedStates"/>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>3</number>
              </property>
-             <widget class="QWidget" name="tab_5">
+             <widget class="QWidget" name="tab_XValues">
               <attribute name="title">
                <string>X Values</string>
               </attribute>
@@ -260,7 +260,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="tab_6">
+             <widget class="QWidget" name="tab_YValues">
               <attribute name="title">
                <string>Y Values</string>
               </attribute>
@@ -396,7 +396,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="tab_7">
+             <widget class="QWidget" name="tab_NValues">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -556,7 +556,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="tab_8">
+             <widget class="QWidget" name="tab_DataValues">
               <attribute name="title">
                <string>Data Values</string>
               </attribute>
@@ -843,9 +843,9 @@
               </font>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
-             <widget class="QWidget" name="tab_9">
+             <widget class="QWidget" name="tab_XAxis">
               <attribute name="title">
                <string>X Axis</string>
               </attribute>
@@ -948,7 +948,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="tab_10">
+             <widget class="QWidget" name="tab_YAxis">
               <attribute name="title">
                <string>Y Axis</string>
               </attribute>
@@ -1145,7 +1145,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QLabel" name="label_currentrowlabel">
+              <widget class="QLabel" name="label_currentrowvalue">
                <property name="font">
                 <font>
                  <family>Times New Roman</family>
