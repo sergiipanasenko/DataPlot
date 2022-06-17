@@ -295,11 +295,8 @@ class ProgramWindow(MyForm3):
             #                 self.currentTable.item(j, i).setBackground(self.DataChooseColor)
 
 
-
-
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = ProgramWindow()
     MainWindow.show()

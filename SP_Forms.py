@@ -1,4 +1,7 @@
+import os.path
+
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
+from SP_File import MyFileToReadData
 
 
 class MyAbstractForm(QtCore.QObject):
@@ -58,7 +61,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window = QtWidgets.QMdiSubWindow()
         self.sub_window_number = 0
         self.sub_window_amount = 0
-        self.LoadbProgress = QtWidgets.QProgressBar()
         self.LabelX = QtWidgets.QLabel()
         self.LabelY = QtWidgets.QLabel()
         self.LabelData = QtWidgets.QLabel()
@@ -303,14 +305,45 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self._create_table_sub_window(title, icon)
 
     def open_data_file(self):
-        pass
+        self.statusbar.showMessage('Data loading from file...')
+        recent_directory = self.settings.value('recent_directory', type=str)
+        file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
+                                                     caption="Open data file",
+                                                     directory=recent_directory,
+                                                     filter="All files (*);;Text files (*.dat *.txt)",
+                                                     initialFilter="Text files (*.dat *.txt)")
+        if file[0]:
+            self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
+            raw_path = r'{}'.format(file[0])
+            data_file = MyFileToReadData()
+            data_file.read_data(raw_path)
+            title = 'Data ' + str(self.sub_window_number + 1)
+            icon = 'UI/New_Icons/text-doc.png'
+            self._create_table_sub_window(title, icon)
+            self.current_table.setRowCount(data_file.row_number)
+            self.current_table.setColumnCount(data_file.column_number)
+            for row in range(data_file.row_number):
+                row_data = data_file.data[row]
+                col = 0
+                while col < len(row_data):
+                    self.current_table.setItem(row, col,
+                                               QtWidgets.QTableWidgetItem(data_file.data[row][col]))
+                    col += 1
+            self._change_table()
+            self.LabelX.setText('X:')
+            self.statusbar.addWidget(self.LabelX, 1)
+            self.LabelY.setText('Y:')
+            self.statusbar.addWidget(self.LabelY, 1)
+            self.LabelData.setText('Data:')
+            self.statusbar.addWidget(self.LabelData, 1)
 
     def save_file(self):
         pass
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
-        table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table')
-        self.current_table = table
-        self._change_table()
+        if self.sub_window:
+            table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table')
+            self.current_table = table
+            self._change_table()
 
