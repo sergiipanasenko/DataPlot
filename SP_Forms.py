@@ -1,5 +1,4 @@
-import os.path
-
+from functools import reduce
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
 from SP_File import MyFileToReadData
 
@@ -298,6 +297,21 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.current_table.removeColumn(self.current_table.currentColumn())
         self._change_table()
 
+    def _fill_table(self, data: list):
+        row_number = len(data)
+        max_column_number = max(list(map(len, data)))
+        self.current_table.setRowCount(row_number)
+        self.current_table.setColumnCount(max_column_number)
+
+        for row in range(row_number):
+            row_data = data[row]
+            col = 0
+            while col < len(row_data):
+                self.current_table.setItem(row, col,
+                                           QtWidgets.QTableWidgetItem(data[row][col]))
+                col += 1
+        self._change_table()
+
     def create_new_file(self):
         self.statusbar.showMessage('Creating new data file...')
         title = 'Data ' + str(self.sub_window_number + 1)
@@ -320,22 +334,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             title = 'Data ' + str(self.sub_window_number + 1)
             icon = 'UI/New_Icons/text-doc.png'
             self._create_table_sub_window(title, icon)
-            self.current_table.setRowCount(data_file.row_number)
-            self.current_table.setColumnCount(data_file.column_number)
-            for row in range(data_file.row_number):
-                row_data = data_file.data[row]
-                col = 0
-                while col < len(row_data):
-                    self.current_table.setItem(row, col,
-                                               QtWidgets.QTableWidgetItem(data_file.data[row][col]))
-                    col += 1
-            self._change_table()
-            self.LabelX.setText('X:')
-            self.statusbar.addWidget(self.LabelX, 1)
-            self.LabelY.setText('Y:')
-            self.statusbar.addWidget(self.LabelY, 1)
-            self.LabelData.setText('Data:')
-            self.statusbar.addWidget(self.LabelData, 1)
+            self._fill_table(data_file.data)
 
     def save_file(self):
         pass

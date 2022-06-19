@@ -25,8 +25,6 @@ class MyFileToReadData(MyFileToReadText):
     def __init__(self):
         MyFileToReadText.__init__(self)
         self.data = None
-        self.row_number = 0
-        self.column_number = 0
 
     def read_data(self, file_name):
         self.read_text(file_name)
@@ -34,7 +32,4 @@ class MyFileToReadData(MyFileToReadText):
         self.data = []
         for row in self.text.splitlines():
             row_data = row.rstrip().split()
-            if self.column_number < len(row_data):
-                self.column_number = len(row_data)
             self.data.append(row_data)
-        self.row_number = len(self.data)

@@ -655,8 +655,7 @@ QTableView
     background-color: #808080;
     border: 1px groove #333333;
     color: #101010;
-    color: #484c58;
-	font-weight: bold;
+    font-weight: bold;
     gridline-color: #333333;
     outline : 0;
 
