@@ -1302,6 +1302,7 @@
    <addaction name="actionExcel_file"/>
    <addaction name="actionBinary_file"/>
    <addaction name="action_HDF5_file"/>
+   <addaction name="actionOutput"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionFont"/>
@@ -1352,6 +1353,7 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuImport"/>
+    <addaction name="actionOutput"/>
     <addaction name="actionSave"/>
     <addaction name="actionExit"/>
    </widget>
@@ -1635,7 +1637,7 @@
      <normaloff>New_Icons/add-file.png</normaloff>New_Icons/add-file.png</iconset>
    </property>
    <property name="text">
-    <string>New data file...</string>
+    <string>New data table...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -1711,6 +1713,15 @@
    </property>
    <property name="text">
     <string>Column</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="icon">
+    <iconset>
+     <normaloff>New_Icons/output.png</normaloff>New_Icons/output.png</iconset>
+   </property>
+   <property name="text">
+    <string>Create output table...</string>
    </property>
   </action>
  </widget>

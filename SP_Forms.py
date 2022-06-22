@@ -60,10 +60,11 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window = QtWidgets.QMdiSubWindow()
         self.sub_window_number = 0
         self.sub_window_amount = 0
-        self.LabelX = QtWidgets.QLabel()
-        self.LabelY = QtWidgets.QLabel()
-        self.LabelData = QtWidgets.QLabel()
+        self.table_number = 0
         self.current_table = QtWidgets.QTableWidget()
+        self.x_values = dict()
+        self.y_values = dict()
+        self.data_values = dict()
 
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
@@ -79,6 +80,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionPerstfic = self.findChild(QtWidgets.QAction, "actionPerstfic")
         self.actionNew = self.findChild(QtWidgets.QAction, "actionNew")
         self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
+        self.actionOutput = self.findChild(QtWidgets.QAction, "actionOutput")
         self.actionSave = self.findChild(QtWidgets.QAction, "actionSave")
         self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
         self.actionFont = self.findChild(QtWidgets.QAction, "actionFont")
@@ -158,8 +160,9 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         # connections
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
-        self.actionNew.triggered.connect(self.create_new_file)
+        self.actionNew.triggered.connect(self.create_new_table)
         self.actionOpen.triggered.connect(self.open_data_file)
+        self.actionOutput.triggered.connect(self.create_output)
         self.actionSave.triggered.connect(self.save_file)
 
         self.actionDefault.triggered.connect(lambda: self.set_style(''))
@@ -183,26 +186,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionColumn.triggered.connect(self._remove_column)
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
 
-        # self.combo_Xrowcol.currentIndexChanged.connect(self.XRowColChange)
-        # self.combo_Yrowcol.currentIndexChanged.connect(self.YRowColChange)
-        #        self.combo_Xnumber.currentIndexChanged.connect(self.XChangeState)
-        #         self.combo_Ynumber.currentIndexChanged.connect(self.YChangeState)
-        #         self.combo_Xbegin.currentIndexChanged.connect(self.XChangeState)
-        #         self.combo_Xend.currentIndexChanged.connect(self.XChangeState)
-        #         self.combo_Ybegin.currentIndexChanged.connect(self.YChangeState)
-        #         self.combo_Yend.currentIndexChanged.connect(self.YChangeState)
-        #         self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
-        #         self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
-        #         self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
-        #         self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
-
-        # self.check_Xvalue.stateChanged.connect(self.XChangeState)
-        # self.check_Yvalue.stateChanged.connect(self.YChangeState)
-        # self.check_Datavalue.stateChanged.connect(self.DataChangeState)
-        # self.combo_Datarowbegin.currentIndexChanged.connect(self.DataChangeState)
-        # self.combo_Datarowend.currentIndexChanged.connect(self.DataChangeState)
-        # self.combo_Datacolbegin.currentIndexChanged.connect(self.DataChangeState)
-        # self.combo_Datacolend.currentIndexChanged.connect(self.DataChangeState)
         self.mdiArea.subWindowActivated.connect(self.sub_window_change)
 
     def _change_table(self):
@@ -267,10 +250,11 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window = new_sub_window
         self.sub_window_number += 1
         self.sub_window_amount += 1
-        self.sub_window.setObjectName('sub-window ' + str(self.sub_window_number))
+        self.table_number += 1
         self.sub_window.setWindowTitle(sub_window_title)
         self.sub_window.setWindowIcon(QtGui.QIcon(sub_window_icon))
         self.current_table = self.sub_window.table
+        print(self.current_table.windowTitle())
         self.mdiArea.addSubWindow(self.sub_window)
         self.sub_window.show()
         self._change_table()
@@ -312,32 +296,64 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                 col += 1
         self._change_table()
 
-    def create_new_file(self):
-        self.statusbar.showMessage('Creating new data file...')
+    def _select_data(self, limits: dict, color: QtGui.QColor):
+        pass
+
+    def _add_data(self, target: dict, data: dict):
+        pass
+
+    def create_new_table(self):
+        self.statusbar.showMessage('Creating new data table...')
         title = 'Data ' + str(self.sub_window_number + 1)
         icon = 'UI/New_Icons/add-file.png'
         self._create_table_sub_window(title, icon)
 
+    def create_output(self):
+        self.statusbar.showMessage('Creating output table...')
+        title = 'Output table'
+        icon = 'UI/New_Icons/output.png'
+        self._create_table_sub_window(title, icon)
+        self.actionOutput.setEnabled(False)
+
     def open_data_file(self):
         self.statusbar.showMessage('Data loading from file...')
-        recent_directory = self.settings.value('recent_directory', type=str)
-        file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
-                                                     caption="Open data file",
-                                                     directory=recent_directory,
-                                                     filter="All files (*);;Text files (*.dat *.txt)",
-                                                     initialFilter="Text files (*.dat *.txt)")
-        if file[0]:
-            self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
-            raw_path = r'{}'.format(file[0])
-            data_file = MyFileToReadData()
-            data_file.read_data(raw_path)
-            title = 'Data ' + str(self.sub_window_number + 1)
-            icon = 'UI/New_Icons/text-doc.png'
-            self._create_table_sub_window(title, icon)
-            self._fill_table(data_file.data)
+        status = True
+        while status:
+            recent_directory = self.settings.value('recent_directory', type=str)
+            file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
+                                                        caption="Open data file",
+                                                        directory=recent_directory,
+                                                        filter="All files (*);;Text files (*.dat *.txt)",
+                                                        initialFilter="Text files (*.dat *.txt)")
+            if file[0]:
+                self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
+                raw_path = r'{}'.format(file[0])
+                data_file = MyFileToReadData()
+                try:
+                    data_file.read_data(raw_path)
+                    title = 'Data ' + str(self.sub_window_number + 1)
+                    icon = 'UI/New_Icons/text-doc.png'
+                    self._create_table_sub_window(title, icon)
+                    self._fill_table(data_file.data)
+                    status = False
+                except Exception as e:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setText("Data File Open Error")
+                    msg.setInformativeText(f"File {file[0]} is not text data file")
+                    msg.setDetailedText(str(e))
+                    msg.setWindowTitle("Error")
+                    msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
+                    msg.exec_()
+                    if msg.clickedButton().text() == 'OK':
+                        status = False
 
     def save_file(self):
-        pass
+        file = QtWidgets.QFileDialog.getSaveFileName(parent=self,
+                                                     caption="Save data file",
+                                                     directory=QtCore.QDir.currentPath(),
+                                                     filter="Text files (*.dat *.txt)",
+                                                     initialFilter="Text files (*.dat *.txt)")
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
@@ -345,4 +361,3 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table')
             self.current_table = table
             self._change_table()
-
