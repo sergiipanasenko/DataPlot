@@ -1299,7 +1299,7 @@
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
-   <addaction name="actionExcel_file"/>
+   <addaction name="actionExcel"/>
    <addaction name="actionBinary_file"/>
    <addaction name="action_HDF5_file"/>
    <addaction name="actionOutput"/>
@@ -1346,7 +1346,7 @@
       <iconset>
        <normaloff>New_Icons/import-1.png</normaloff>New_Icons/import-1.png</iconset>
      </property>
-     <addaction name="actionExcel_file"/>
+     <addaction name="actionExcel"/>
      <addaction name="actionBinary_file"/>
      <addaction name="action_HDF5_file"/>
     </widget>
@@ -1463,7 +1463,7 @@
     <string>&amp;About...</string>
    </property>
   </action>
-  <action name="actionExcel_file">
+  <action name="actionExcel">
    <property name="icon">
     <iconset>
      <normaloff>New_Icons/excel.png</normaloff>New_Icons/excel.png</iconset>

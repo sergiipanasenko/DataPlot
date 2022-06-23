@@ -1,6 +1,5 @@
-from functools import reduce
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from SP_File import MyFileToReadData
+from SP_File import MyDataFile, MyExcelFile
 
 
 class MyAbstractForm(QtCore.QObject):
@@ -80,6 +79,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionPerstfic = self.findChild(QtWidgets.QAction, "actionPerstfic")
         self.actionNew = self.findChild(QtWidgets.QAction, "actionNew")
         self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
+        self.actionExcel = self.findChild(QtWidgets.QAction, "actionExcel")
         self.actionOutput = self.findChild(QtWidgets.QAction, "actionOutput")
         self.actionSave = self.findChild(QtWidgets.QAction, "actionSave")
         self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
@@ -162,6 +162,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
         self.actionNew.triggered.connect(self.create_new_table)
         self.actionOpen.triggered.connect(self.open_data_file)
+        self.actionExcel.triggered.connect(self.open_excel_file)
         self.actionOutput.triggered.connect(self.create_output)
         self.actionSave.triggered.connect(self.save_file)
 
@@ -321,16 +322,16 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         while status:
             recent_directory = self.settings.value('recent_directory', type=str)
             file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
-                                                        caption="Open data file",
-                                                        directory=recent_directory,
-                                                        filter="All files (*);;Text files (*.dat *.txt)",
-                                                        initialFilter="Text files (*.dat *.txt)")
+                                                         caption="Open data file",
+                                                         directory=recent_directory,
+                                                         filter="All files (*);;Text files (*.dat *.txt)",
+                                                         initialFilter="Text files (*.dat *.txt)")
             if file[0]:
                 self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
                 raw_path = r'{}'.format(file[0])
-                data_file = MyFileToReadData()
+                data_file = MyDataFile(raw_path)
                 try:
-                    data_file.read_data(raw_path)
+                    data_file.read_data()
                     title = 'Data ' + str(self.sub_window_number + 1)
                     icon = 'UI/New_Icons/text-doc.png'
                     self._create_table_sub_window(title, icon)
@@ -354,6 +355,35 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                                                      directory=QtCore.QDir.currentPath(),
                                                      filter="Text files (*.dat *.txt)",
                                                      initialFilter="Text files (*.dat *.txt)")
+
+    def open_excel_file(self):
+        self.statusbar.showMessage('Excel Book loading from file...')
+        status = True
+        while status:
+            recent_directory = self.settings.value('recent_directory', type=str)
+            file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
+                                                         caption="Open Excel file",
+                                                         directory=recent_directory,
+                                                         filter="All files (*);;Excel files (*.xlsx *.xlsm)",
+                                                         initialFilter="Excel files (*.xlsx *.xlsm)")
+            if file[0]:
+                self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
+                raw_path = r'{}'.format(file[0])
+                excel_file = MyExcelFile(raw_path)
+                try:
+                    excel_file.read_xml_book()
+                    status = False
+                except Exception as e:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setText("Excel File Open Error")
+                    msg.setInformativeText(f"File {file[0]} is not Excel file")
+                    msg.setDetailedText(str(e))
+                    msg.setWindowTitle("Error")
+                    msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
+                    msg.exec_()
+                    if msg.clickedButton().text() == 'OK':
+                        status = False
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
