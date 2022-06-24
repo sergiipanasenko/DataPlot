@@ -1,3 +1,4 @@
+from os.path import splitext
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
 from SP_File import MyDataFile, MyExcelFile
 
@@ -332,7 +333,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                 data_file = MyDataFile(raw_path)
                 try:
                     data_file.read_data()
-                    title = 'Data ' + str(self.sub_window_number + 1)
+                    title = raw_path
                     icon = 'UI/New_Icons/text-doc.png'
                     self._create_table_sub_window(title, icon)
                     self._fill_table(data_file.data)
@@ -348,6 +349,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     msg.exec_()
                     if msg.clickedButton().text() == 'OK':
                         status = False
+            else:
+                status = False
 
     def save_file(self):
         file = QtWidgets.QFileDialog.getSaveFileName(parent=self,
@@ -364,14 +367,29 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
                                                          caption="Open Excel file",
                                                          directory=recent_directory,
-                                                         filter="All files (*);;Excel files (*.xlsx *.xlsm)",
-                                                         initialFilter="Excel files (*.xlsx *.xlsm)")
+                                                         filter="All files (*.*);;"
+                                                                "Excel Workbooks (*.xlsx *.xlsm);;"
+                                                                "Excel Binary Workbooks (*.xlsb);;"
+                                                                "Excel templates (*.xltx *.xltm);;"
+                                                                "Excel Workbooks 97-2003 (*.xls)",
+                                                         initialFilter="Excel Workbooks (*.xlsx *.xlsm)")
             if file[0]:
                 self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
                 raw_path = r'{}'.format(file[0])
+                file_ext = splitext(raw_path)[1]
                 excel_file = MyExcelFile(raw_path)
                 try:
-                    excel_file.read_xml_book()
+                    if file_ext in ('.xlsx', '.xlsm', '.xltx', '.xltm'):
+                        excel_file.read_new_book()
+                    else:
+                        if file_ext == '.xlsb':
+                            excel_file.read_binary_book()
+                        else:
+                            excel_file.read_old_book()
+                    title = raw_path
+                    icon = 'UI/New_Icons/excel.png'
+                    self._create_table_sub_window(title, icon)
+                    self._fill_table(excel_file.data[list(excel_file.data.keys())[0]])
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
@@ -384,6 +402,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     msg.exec_()
                     if msg.clickedButton().text() == 'OK':
                         status = False
+            else:
+                status = False
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
