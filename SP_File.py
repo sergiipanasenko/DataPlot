@@ -79,9 +79,9 @@ class MyExcelFile(MyFile):
                 for row in range(1, sheet.max_row + 1):
                     current_row = []
                     for col in range(1, sheet.max_column + 1):
-                        cell_value = str(sheet.cell(row, col).value)
+                        cell_value = sheet.cell(row, col).value
                         if cell_value:
-                            current_row.append(cell_value)
+                            current_row.append(str(cell_value))
                         else:
                             current_row.append('')
                     self.data[sheet.title].append(current_row)
@@ -95,9 +95,9 @@ class MyExcelFile(MyFile):
                 for row in range(sheet.nrows):
                     current_row = []
                     for col in range(sheet.ncols):
-                        cell_value = str(sheet.cell_value(row, col))
+                        cell_value = sheet.cell_value(row, col)
                         if cell_value:
-                            current_row.append(cell_value)
+                            current_row.append(str(cell_value))
                         else:
                             current_row.append('')
                     self.data[sheet.name].append(current_row)
