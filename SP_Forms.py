@@ -40,12 +40,14 @@ class MyTableSubWindow(QtWidgets.QWidget, MyAbstractForm):
 class MyTabSubWindow(QtWidgets.QWidget, MyAbstractForm):
     def __init__(self):
         # parent initialisation
-        super().__init__(self)
+        super().__init__()
 
         # UI loading
         uic.loadUi('UI/MyTabWidget.ui', self)
 
         # explicit definition of the class attributes
+        self.tab1 = self.findChild(QtWidgets.QWidget, 'tab1')
+        self.table1 = self.findChild(QtWidgets.QTableWidget, 'table1')
 
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
@@ -248,18 +250,25 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def _create_table_sub_window(self, sub_window_title, sub_window_icon):
         self._create_sub_window()
-        new_sub_window = MyTableSubWindow()
-        self.sub_window = new_sub_window
+        self.sub_window = MyTableSubWindow()
         self.sub_window_number += 1
         self.sub_window_amount += 1
         self.table_number += 1
         self.sub_window.setWindowTitle(sub_window_title)
         self.sub_window.setWindowIcon(QtGui.QIcon(sub_window_icon))
-        self.current_table = self.sub_window.table
-        print(self.current_table.windowTitle())
         self.mdiArea.addSubWindow(self.sub_window)
         self.sub_window.show()
-        self._change_table()
+
+    def _create_tab_sub_window(self, sub_window_title, sub_window_icon):
+        self._create_sub_window()
+        self.sub_window = MyTabSubWindow()
+        self.sub_window_number += 1
+        self.sub_window_amount += 1
+        self.table_number += 1
+        self.sub_window.setWindowTitle(sub_window_title)
+        self.sub_window.setWindowIcon(QtGui.QIcon(sub_window_icon))
+        self.mdiArea.addSubWindow(self.sub_window)
+        self.sub_window.show()
 
     def _add_row(self, flag):
         if flag:
@@ -388,7 +397,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                             excel_file.read_old_book()
                     title = raw_path
                     icon = 'UI/New_Icons/excel.png'
-                    self._create_table_sub_window(title, icon)
+                    self._create_tab_sub_window(title, icon)
+                    tabs = self.sub_window.findChild(QtWidgets.QTabWidget, 'tab_tables')
+                    tabs.setTabText(0, 'Hello')
+                    tabs.addTab(QtWidgets.QTableWidget(), 'tab2')
                     self._fill_table(excel_file.data[list(excel_file.data.keys())[0]])
                     status = False
                 except Exception as e:
@@ -408,6 +420,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
-            table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table')
+            table = self.sub_window.widget().findChildren(QtWidgets.QTableWidget)[0]
             self.current_table = table
             self._change_table()
