@@ -46,8 +46,20 @@ class MyTabSubWindow(QtWidgets.QWidget, MyAbstractForm):
         uic.loadUi('UI/MyTabWidget.ui', self)
 
         # explicit definition of the class attributes
+        self.tab_tables = self.findChild(QtWidgets.QTabWidget, 'tab_tables')
         self.tab1 = self.findChild(QtWidgets.QWidget, 'tab1')
         self.table1 = self.findChild(QtWidgets.QTableWidget, 'table1')
+
+        # connections
+        self.tab_tables.tabCloseRequested.connect(self.close_tab)
+        self.tab_tables.currentChanged.connect(lambda: print('Changed'))
+
+    def close_tab(self, index):
+        if self.tab_tables.count() > 1:
+            self.tab_tables.removeTab(index)
+            if self.tab_tables.count() == 1:
+                self.tab_tables.setTabsClosable(False)
+
 
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
@@ -63,6 +75,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window_number = 0
         self.sub_window_amount = 0
         self.table_number = 0
+        self.current_tabs = QtWidgets.QTabWidget()
         self.current_table = QtWidgets.QTableWidget()
         self.x_values = dict()
         self.y_values = dict()
@@ -417,6 +430,13 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
-            table = self.sub_window.widget().findChildren(QtWidgets.QTableWidget)[0]
-            self.current_table = table
+            self.current_table = self.sub_window.widget().findChildren(QtWidgets.QTableWidget)[0]
             self._change_table()
+            tab = self.sub_window.widget().findChildren(QtWidgets.QTabWidget)[0]
+            if tab:
+                self.current_tabs = tab
+
+    def tab_change(self):
+        self.current_table = self.current_tabs.currentWidget().findChildren(QtWidgets.QTableWidget)[0]
+        self._change_table()
+
