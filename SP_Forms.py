@@ -163,10 +163,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         # connections
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
-        self.actionNew.triggered.connect(self.create_new_table)
+        self.actionNew.triggered.connect(self.add_new_sub_window)
         self.actionOpen.triggered.connect(self.open_data_file)
         self.actionExcel.triggered.connect(self.open_excel_file)
-        self.actionOutput.triggered.connect(self.create_output)
+        self.actionOutput.triggered.connect(self.add_new_sub_window)
         self.actionSave.triggered.connect(self.save_file)
 
         self.actionDefault.triggered.connect(lambda: self.set_style(''))
@@ -237,7 +237,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
         self.label_currentcolumnvalue.setText(str(self.current_table.currentColumn() + 1))
 
-    def _create_sub_window(self):
+    def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
         if not self.menuAdd.isEnabled():
             self.menuAdd.setEnabled(True)
             self.actionRow_above.setEnabled(True)
@@ -247,21 +247,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self.menuRemove.setEnabled(True)
             self.actionRow.setEnabled(True)
             self.actionColumn.setEnabled(True)
-
-    def _create_table_sub_window(self, sub_window_title, sub_window_icon):
-        self._create_sub_window()
-        self.sub_window = MyTableSubWindow()
-        self.sub_window_number += 1
-        self.sub_window_amount += 1
-        self.table_number += 1
-        self.sub_window.setWindowTitle(sub_window_title)
-        self.sub_window.setWindowIcon(QtGui.QIcon(sub_window_icon))
-        self.mdiArea.addSubWindow(self.sub_window)
-        self.sub_window.show()
-
-    def _create_tab_sub_window(self, sub_window_title, sub_window_icon):
-        self._create_sub_window()
-        self.sub_window = MyTabSubWindow()
+        self.sub_window = QtWidgets.QMdiSubWindow()
+        self.sub_window.setWidget(widget)
         self.sub_window_number += 1
         self.sub_window_amount += 1
         self.table_number += 1
@@ -313,18 +300,18 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def _add_data(self, target: dict, data: dict):
         pass
 
-    def create_new_table(self):
-        self.statusbar.showMessage('Creating new data table...')
-        title = 'Data ' + str(self.sub_window_number + 1)
-        icon = 'UI/New_Icons/add-file.png'
-        self._create_table_sub_window(title, icon)
-
-    def create_output(self):
-        self.statusbar.showMessage('Creating output table...')
-        title = 'Output table'
-        icon = 'UI/New_Icons/output.png'
-        self._create_table_sub_window(title, icon)
-        self.actionOutput.setEnabled(False)
+    def add_new_sub_window(self):
+        if self.sender().objectName() == 'actionNew':
+            self.statusbar.showMessage('Creating new data table...')
+            title = 'Data ' + str(self.sub_window_number + 1)
+            icon = 'UI/New_Icons/add-file.png'
+            self._create_sub_window(title, icon, MyTableSubWindow())
+        elif self.sender().objectName() == 'actionOutput':
+            self.statusbar.showMessage('Creating output table...')
+            title = 'Output table'
+            icon = 'UI/New_Icons/output.png'
+            self._create_sub_window(title, icon, MyTableSubWindow())
+            self.actionOutput.setEnabled(False)
 
     def open_data_file(self):
         self.statusbar.showMessage('Data loading from file...')
@@ -344,7 +331,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     data_file.read_data()
                     title = raw_path
                     icon = 'UI/New_Icons/text-doc.png'
-                    self._create_table_sub_window(title, icon)
+                    self._create_sub_window(title, icon, MyTableSubWindow())
                     self._fill_table(data_file.data)
                     status = False
                 except Exception as e:
@@ -390,18 +377,28 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                 try:
                     if file_ext in ('.xlsx', '.xlsm', '.xltx', '.xltm'):
                         excel_file.read_new_book()
+                    elif file_ext == '.xlsb':
+                        excel_file.read_binary_book()
+                    elif file_ext == '.xls':
+                        excel_file.read_old_book()
                     else:
-                        if file_ext == '.xlsb':
-                            excel_file.read_binary_book()
-                        else:
-                            excel_file.read_old_book()
+                        raise Exception(f"This file has not Excel extension ({file_ext}).")
                     title = raw_path
                     icon = 'UI/New_Icons/excel.png'
-                    self._create_tab_sub_window(title, icon)
-                    tabs = self.sub_window.findChild(QtWidgets.QTabWidget, 'tab_tables')
-                    tabs.setTabText(0, 'Hello')
-                    tabs.addTab(QtWidgets.QTableWidget(), 'tab2')
-                    self._fill_table(excel_file.data[list(excel_file.data.keys())[0]])
+                    self._create_sub_window(title, icon, MyTabSubWindow())
+                    tabs = self.sub_window.findChildren(QtWidgets.QTabWidget)[0]
+                    number_of_tabs = len(excel_file.data)
+                    list_of_keys = list(excel_file.data.keys())
+                    for tab_number in range(0, number_of_tabs):
+                        if tab_number == 0:
+                            tabs.setTabText(tab_number, list_of_keys[tab_number])
+                            self.current_table = self.sub_window.findChild(QtWidgets.QTableWidget, 'table1')
+                        else:
+                            new_table = QtWidgets.QTableWidget()
+                            new_table.setObjectName('table'+str(tab_number + 1))
+                            tabs.addTab(new_table, list_of_keys[tab_number])
+                            self.current_table = new_table
+                        self._fill_table(excel_file.data[list(excel_file.data.keys())[tab_number]])
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
