@@ -4,103 +4,6 @@ from SP_Forms import MyForm3
 
 class ProgramWindow(MyForm3):
 
-
-    def FileOpen(self):
-        self.ListRowNumber = []
-        self.ListColNumber = []
-        self.XRange = []
-        self.YRange = []
-        self.DataRange = []
-        self.combo_Datarowbegin.clear()
-        self.combo_Datarowend.clear()
-        self.combo_Datacolbegin.clear()
-        self.combo_Datacolend.clear()
-        self.statusbar.showMessage('Data loading from file...')
-        self.LoadProgress = QtWidgets.QProgressBar()
-        self.LoadProgress.setValue(0)
-        recent_directory = self.settings.value('recent_directory', type=str)
-        file = QtWidgets.QFileDialog.getOpenFileName(parent=MainWindow,
-                                                     caption="Open data file",
-                                                     directory=recent_directory,
-                                                     filter="All files (*);;Text files (*.dat *.txt)",
-                                                     initialFilter="Text files (*.dat *.txt)")
-        if file[0]:
-            self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
-            raw_path = r'{}'.format(file[0])
-            f = open(raw_path, 'rt')
-            line_number = 0
-            for _ in f:
-                line_number += 1
-            f.seek(0)
-            row_number = 0
-            col_number = 0
-            self.LoadProgress.setRange(0, line_number)
-            self.statusbar.addPermanentWidget(self.LoadProgress)
-            table_widget = TableWidget()
-            self.subWindow = table_widget
-            self.subWindow.setObjectName('subwindow ' + str(self.SubWindowNumber))
-            self.currentTable = self.subWindow.table
-            self.currentTable.setRowCount(0)
-            self.currentTable.setColumnCount(0)
-            self.subWindow.setWindowTitle(raw_path)
-            self.subWindow.setWindowIcon(QtGui.QIcon("Icons/Text.png"))
-            self.mdiArea.addSubWindow(self.subWindow)
-            self.subWindow.show()
-            self.SubWindowNumber += 1
-            for line in f:
-                row = line.split()
-
-                self.currentTable.setRowCount(self.currentTable.rowCount() + 1)
-                if self.currentTable.columnCount() < len(row):
-                    self.currentTable.setColumnCount(len(row))
-                    col_number = len(row)
-                for i in range(len(row)):
-                    self.currentTable.setItem(row_number, i,
-                                              QtWidgets.QTableWidgetItem(row[i]))
-                row_number += 1
-                self.LoadProgress.setValue(row_number)
-            f.close()
-            self.statusbar.showMessage('Initialization of values...')
-            self.LoadProgress.setValue(0)
-            self.label_totalrowvalue.setText(str(row_number))
-            self.label_totalcolumnvalue.setText(str(col_number))
-            self.ListColNumber = list(range(1, col_number + 1))
-            self.ListColNumber = list(map(str, self.ListColNumber))
-            self.ListRowNumber = list(range(1, row_number + 1))
-            self.ListRowNumber = list(map(str, self.ListRowNumber))
-            self.XRowColChange()
-            self.LoadProgress.setValue(row_number // 4)
-            self.YRowColChange()
-            self.LoadProgress.setValue(row_number // 2)
-            # self.combo_Datarowbegin.addItems(5)
-            self.combo_Datarowbegin.addItems(self.ListRowNumber)
-            self.combo_Datarowend.addItems(self.ListRowNumber)
-            self.combo_Datarowend.setCurrentIndex(len(self.ListRowNumber) - 1)
-            self.combo_Datacolbegin.addItems(self.ListColNumber)
-            self.combo_Datacolend.addItems(self.ListColNumber)
-            self.combo_Datacolend.setCurrentIndex(len(self.ListColNumber) - 1)
-            self.LoadProgress.setValue(3 * row_number // 4)
-            self.XChangeState()
-            self.YChangeState()
-            self.LoadProgress.setValue(row_number)
-            self.DataChangeState()
-            self.statusbar.clearMessage()
-            self.statusbar.removeWidget(self.LoadProgress)
-            self.LabelX.setText('X:')
-            self.statusbar.addWidget(self.LabelX, 1)
-            self.LabelY.setText('Y:')
-            self.statusbar.addWidget(self.LabelY, 1)
-            self.LabelData.setText('Data:')
-            self.statusbar.addWidget(self.LabelData, 1)
-
-    @staticmethod
-    def FileSave():
-        file = QtWidgets.QFileDialog.getSaveFileName(parent=MainWindow,
-                                                     caption="Save data file",
-                                                     directory=QtCore.QDir.currentPath(),
-                                                     filter="All files (*);;Text files (*.dat *.txt)",
-                                                     initialFilter="Text files (*.dat *.txt)")
-
     def TableRepaint(self):
         background_color = QtGui.QColor('white')
         if self.ListRowNumber:
@@ -298,6 +201,6 @@ class ProgramWindow(MyForm3):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = ProgramWindow()
+    MainWindow = MyForm3()
     MainWindow.show()
     sys.exit(app.exec_())
