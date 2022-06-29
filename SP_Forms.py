@@ -243,8 +243,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self.combo_Datacolto.setCurrentIndex(len(col_number_list) - 1)
         self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
         self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
-        self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
-        self.label_currentcolumnvalue.setText(str(self.current_table.currentColumn() + 1))
+        self.select_cell()
 
     def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
         if not self.menuAdd.isEnabled():
@@ -340,7 +339,9 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     data_file.read_data()
                     title = raw_path
                     icon = 'UI/New_Icons/text-doc.png'
-                    self._create_sub_window(title, icon, MyTableSubWindow())
+                    new_table_widget = MyTableSubWindow()
+                    new_table_widget.table.itemSelectionChanged.connect(self.select_cell)
+                    self._create_sub_window(title, icon, new_table_widget)
                     self._fill_table(data_file.data)
                     status = False
                 except Exception as e:
@@ -403,6 +404,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     list_of_keys = list(excel_file.data.keys())
                     for tab_number in range(0, number_of_tabs):
                         new_table = QtWidgets.QTableWidget()
+                        new_table.itemSelectionChanged.connect(self.select_cell)
                         new_table.setObjectName(f"table{tab_number + 1}")
                         self.current_tabs.addTab(new_table, list_of_keys[tab_number])
                         self.current_table = new_table
@@ -440,3 +442,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self.current_table = self.current_tabs.findChild(QtWidgets.QTableWidget, f"table{index + 1}")
             self._change_table()
 
+    def select_cell(self):
+        self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
+        self.label_currentcolumnvalue.setText(str(self.current_table.currentColumn() + 1))
