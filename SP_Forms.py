@@ -46,18 +46,16 @@ class MyTabSubWindow(QtWidgets.QWidget, MyAbstractForm):
         uic.loadUi('UI/MyTabWidget.ui', self)
 
         # explicit definition of the class attributes
-        self.tab_tables = self.findChild(QtWidgets.QTabWidget, 'tab_tables')
-        self.tab1 = self.findChild(QtWidgets.QWidget, 'tab1')
-        self.table1 = self.findChild(QtWidgets.QTableWidget, 'table1')
+        self.tabs = self.findChild(QtWidgets.QTabWidget, 'tabs')
 
         # connections
-        self.tab_tables.tabCloseRequested.connect(self.close_tab)
+        self.tabs.tabCloseRequested.connect(self.close_tab)
 
     def close_tab(self, index):
-        if self.tab_tables.count() > 1:
-            self.tab_tables.removeTab(index)
-            if self.tab_tables.count() == 1:
-                self.tab_tables.setTabsClosable(False)
+        if self.tabs.count() > 1:
+            self.tabs.removeTab(index)
+            if self.tabs.count() == 1:
+                self.tabs.setTabsClosable(False)
 
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
@@ -247,7 +245,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
         self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
         self.label_currentcolumnvalue.setText(str(self.current_table.currentColumn() + 1))
-        print('Changed')
 
     def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
         if not self.menuAdd.isEnabled():
@@ -398,20 +395,17 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     title = raw_path
                     icon = 'UI/New_Icons/excel.png'
                     new_tabs = MyTabSubWindow()
-                    new_tabs.tab_tables.currentChanged.connect(self.tab_change)
+                    self.current_tabs = new_tabs.tabs
+                    self.current_tabs.currentChanged.connect(self.tab_change)
                     number_of_tabs = len(excel_file.data)
                     if number_of_tabs == 1:
-                        new_tabs.tab_tables.setTabsClosable(False)
+                        self.current_tabs.setTabsClosable(False)
                     list_of_keys = list(excel_file.data.keys())
                     for tab_number in range(0, number_of_tabs):
-                        if tab_number == 0:
-                            new_tabs.tab_tables.setTabText(tab_number, list_of_keys[tab_number])
-                            self.current_table = new_tabs.table1
-                        else:
-                            new_table = QtWidgets.QTableWidget()
-                            new_table.setObjectName(f"table{tab_number + 1}")
-                            new_tabs.tab_tables.addTab(new_table, list_of_keys[tab_number])
-                            self.current_table = new_table
+                        new_table = QtWidgets.QTableWidget()
+                        new_table.setObjectName(f"table{tab_number + 1}")
+                        self.current_tabs.addTab(new_table, list_of_keys[tab_number])
+                        self.current_table = new_table
                         self._fill_table(excel_file.data[list(excel_file.data.keys())[tab_number]])
                     self._create_sub_window(title, icon, new_tabs)
                     status = False
@@ -432,7 +426,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
-            tabs = self.sub_window.findChild(QtWidgets.QTabWidget, 'tab_tables')
+            tabs = self.sub_window.findChild(QtWidgets.QTabWidget, 'tabs')
             if tabs:
                 self.current_tabs = tabs
                 self.current_tabs.setCurrentIndex(0)
@@ -442,6 +436,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self._change_table()
 
     def tab_change(self, index):
-        self.current_table = self.sub_window.findChild(QtWidgets.QTableWidget, f"table{index + 1}")
-        self._change_table()
+        if index >= 0:
+            self.current_table = self.current_tabs.findChild(QtWidgets.QTableWidget, f"table{index + 1}")
+            self._change_table()
 

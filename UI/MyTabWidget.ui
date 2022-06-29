@@ -21,9 +21,12 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tab_tables">
+    <widget class="QTabWidget" name="tabs">
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>-1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -31,31 +34,6 @@
      <property name="tabsClosable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="tab1">
-      <attribute name="title">
-       <string>Data 1</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QTableWidget" name="table1">
-         <property name="font">
-          <font>
-           <family>Times New Roman</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="rowCount">
-          <number>1</number>
-         </property>
-         <property name="columnCount">
-          <number>1</number>
-         </property>
-         <row/>
-         <column/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>
