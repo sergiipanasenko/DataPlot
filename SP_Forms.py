@@ -309,16 +309,20 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         pass
 
     def add_new_sub_window(self):
+        new_table_widget = MyTableSubWindow()
+        new_table_widget.table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new data table...')
             title = 'Data ' + str(self.sub_window_number + 1)
             icon = 'UI/New_Icons/add-file.png'
-            self._create_sub_window(title, icon, MyTableSubWindow())
+            new_table_widget.table.setRowCount(1)
+            new_table_widget.table.setColumnCount(1)
+            self._create_sub_window(title, icon, new_table_widget)
         elif self.sender().objectName() == 'actionOutput':
             self.statusbar.showMessage('Creating output table...')
             title = 'Output table'
             icon = 'UI/New_Icons/output.png'
-            self._create_sub_window(title, icon, MyTableSubWindow())
+            self._create_sub_window(title, icon, new_table_widget)
             self.actionOutput.setEnabled(False)
 
     def open_data_file(self):

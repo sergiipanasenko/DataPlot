@@ -29,13 +29,11 @@
       </font>
      </property>
      <property name="rowCount">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="columnCount">
-      <number>1</number>
+      <number>0</number>
      </property>
-     <row/>
-     <column/>
     </widget>
    </item>
   </layout>

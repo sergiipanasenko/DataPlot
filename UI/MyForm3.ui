@@ -1517,7 +1517,7 @@
   <action name="action_HDF5_file">
    <property name="icon">
     <iconset>
-     <normaloff>New_Icons/document.png</normaloff>New_Icons/document.png</iconset>
+     <normaloff>New_Icons/hierarchy_diagram.png</normaloff>New_Icons/hierarchy_diagram.png</iconset>
    </property>
    <property name="text">
     <string>&amp;HDF5 file...</string>
