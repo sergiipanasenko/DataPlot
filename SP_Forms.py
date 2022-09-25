@@ -1,6 +1,6 @@
 from os.path import splitext
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from SP_File import MyDataFile, MyExcelFile
+from my_files import MyDataFile, MyExcelFile, MyHDF5File
 
 
 class MyAbstractForm(QtCore.QObject):
@@ -92,6 +92,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionNew = self.findChild(QtWidgets.QAction, "actionNew")
         self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
         self.actionExcel = self.findChild(QtWidgets.QAction, "actionExcel")
+        self.actionHDF5 = self.findChild(QtWidgets.QAction, "actionHDF5")
         self.actionOutput = self.findChild(QtWidgets.QAction, "actionOutput")
         self.actionSave = self.findChild(QtWidgets.QAction, "actionSave")
         self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
@@ -175,6 +176,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionNew.triggered.connect(self.add_new_sub_window)
         self.actionOpen.triggered.connect(self.open_data_file)
         self.actionExcel.triggered.connect(self.open_excel_file)
+        self.actionHDF5.triggered.connect(self.open_h5_file)
         self.actionOutput.triggered.connect(self.add_new_sub_window)
         self.actionSave.triggered.connect(self.save_file)
 
@@ -420,6 +422,40 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setText("Excel File Open Error")
                     msg.setInformativeText(f"File {file[0]} is not Excel file")
+                    msg.setDetailedText(str(e))
+                    msg.setWindowTitle("Error")
+                    msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
+                    msg.exec_()
+                    if msg.clickedButton().text() == 'OK':
+                        status = False
+            else:
+                status = False
+
+    def open_h5_file(self):
+        self.statusbar.showMessage('HDF5 data loading from file...')
+        status = True
+        while status:
+            recent_directory = self.settings.value('recent_directory', type=str)
+            file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
+                                                         caption="Open HDF5 file",
+                                                         directory=recent_directory,
+                                                         filter="All files (*.*);;"
+                                                                "HDF5 files (*.h5 *.hdf *.hdf5)",
+                                                         initialFilter="HDF5 files (*.h5 *.hdf *.hdf5)")
+            if file[0]:
+                self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
+                raw_path = r'{}'.format(file[0])
+                h5_file = MyHDF5File(raw_path)
+                try:
+                    h5_file.read_h5_data()
+                    title = raw_path
+                    icon = 'UI/New_Icons/text-doc.png'
+                    status = False
+                except Exception as e:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setText("HDF% File Open Error")
+                    msg.setInformativeText(f"File {file[0]} is not HDF5 file")
                     msg.setDetailedText(str(e))
                     msg.setWindowTitle("Error")
                     msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)

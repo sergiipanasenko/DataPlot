@@ -1301,7 +1301,7 @@
    <addaction name="actionOpen"/>
    <addaction name="actionExcel"/>
    <addaction name="actionBinary_file"/>
-   <addaction name="action_HDF5_file"/>
+   <addaction name="actionHDF5"/>
    <addaction name="actionOutput"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
@@ -1348,7 +1348,7 @@
      </property>
      <addaction name="actionExcel"/>
      <addaction name="actionBinary_file"/>
-     <addaction name="action_HDF5_file"/>
+     <addaction name="actionHDF5"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -1514,7 +1514,7 @@
     <string>Import Looped data file</string>
    </property>
   </action>
-  <action name="action_HDF5_file">
+  <action name="actionHDF5">
    <property name="icon">
     <iconset>
      <normaloff>New_Icons/hierarchy_diagram.png</normaloff>New_Icons/hierarchy_diagram.png</iconset>
