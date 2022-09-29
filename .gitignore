@@ -3,3 +3,4 @@
 *.txt
 *.dat
 /Icons/*.zip
+/__pycache__/
