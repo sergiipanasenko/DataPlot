@@ -1,61 +1,7 @@
 from os.path import splitext
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from my_files import MyDataFile, MyExcelFile, MyHDF5File
-
-
-class MyAbstractForm(QtCore.QObject):
-    def __init__(self):
-        super().__init__()
-
-        # settings
-        self.settings_file = 'settings.ini'
-        self.settings = QtCore.QSettings(self.settings_file, QtCore.QSettings.IniFormat)
-
-    def set_style(self, qss_file_name):
-        if self.sender():
-            self.settings.setValue("theme_action_checked", self.sender().objectName())
-        try:
-            with open(qss_file_name, 'r') as qss_file:
-                with qss_file:
-                    qss = qss_file.read()
-        except (FileNotFoundError, OSError, IOError):
-            qss = ""
-        QtWidgets.qApp.setStyleSheet(qss)
-        self.settings.setValue("theme_checked", qss_file_name)
-        self.settings.sync()
-
-
-class MyTableSubWindow(QtWidgets.QWidget, MyAbstractForm):
-    def __init__(self):
-        # parent initialisation
-        super().__init__()
-
-        # UI loading
-        uic.loadUi('UI/MyTableWidget.ui', self)
-
-        # explicit definition of the class attributes
-        self.table = self.findChild(QtWidgets.QTableWidget, 'table')
-
-
-class MyTabSubWindow(QtWidgets.QWidget, MyAbstractForm):
-    def __init__(self):
-        # parent initialisation
-        super().__init__()
-
-        # UI loading
-        uic.loadUi('UI/MyTabWidget.ui', self)
-
-        # explicit definition of the class attributes
-        self.tabs = self.findChild(QtWidgets.QTabWidget, 'tabs')
-
-        # connections
-        self.tabs.tabCloseRequested.connect(self.close_tab)
-
-    def close_tab(self, index):
-        if self.tabs.count() > 1:
-            self.tabs.removeTab(index)
-            if self.tabs.count() == 1:
-                self.tabs.setTabsClosable(False)
+from MyFiles import MyDataFile, MyExcelFile, MyHDF5File
+from MyGUI import MyAbstractForm, MyTableWidget, MyTabWidget
 
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
@@ -204,48 +150,49 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.mdiArea.subWindowActivated.connect(self.sub_window_change)
 
     def _change_table(self):
-        self.combo_Xrowfrom.clear()
-        self.combo_Xrowto.clear()
-        self.combo_Xcolfrom.clear()
-        self.combo_Xcolto.clear()
-        self.combo_Yrowfrom.clear()
-        self.combo_Yrowto.clear()
-        self.combo_Ycolfrom.clear()
-        self.combo_Ycolto.clear()
-        self.combo_Datarowfrom.clear()
-        self.combo_Datarowto.clear()
-        self.combo_Datacolfrom.clear()
-        self.combo_Datacolto.clear()
-        if self.current_table.columnCount() and self.current_table.rowCount():
-            row_number_list = list(map(str, range(1, self.current_table.rowCount() + 1)))
-            col_number_list = list(map(str, range(1, self.current_table.columnCount() + 1)))
-            self.combo_Xrowfrom.addItems(row_number_list)
-            self.combo_Xrowfrom.setCurrentIndex(0)
-            self.combo_Xrowto.addItems(row_number_list)
-            self.combo_Xrowto.setCurrentIndex(len(row_number_list) - 1)
-            self.combo_Xcolfrom.addItems(col_number_list)
-            self.combo_Xcolfrom.setCurrentIndex(0)
-            self.combo_Xcolto.addItems(col_number_list)
-            self.combo_Xcolto.setCurrentIndex(len(col_number_list) - 1)
-            self.combo_Yrowfrom.addItems(row_number_list)
-            self.combo_Yrowfrom.setCurrentIndex(0)
-            self.combo_Yrowto.addItems(row_number_list)
-            self.combo_Yrowto.setCurrentIndex(len(row_number_list) - 1)
-            self.combo_Ycolfrom.addItems(col_number_list)
-            self.combo_Ycolfrom.setCurrentIndex(0)
-            self.combo_Ycolto.addItems(col_number_list)
-            self.combo_Ycolto.setCurrentIndex(len(col_number_list) - 1)
-            self.combo_Datarowfrom.addItems(row_number_list)
-            self.combo_Datarowfrom.setCurrentIndex(0)
-            self.combo_Datarowto.addItems(row_number_list)
-            self.combo_Datarowto.setCurrentIndex(len(row_number_list) - 1)
-            self.combo_Datacolfrom.addItems(col_number_list)
-            self.combo_Datacolfrom.setCurrentIndex(0)
-            self.combo_Datacolto.addItems(col_number_list)
-            self.combo_Datacolto.setCurrentIndex(len(col_number_list) - 1)
-        self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
-        self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
-        self.select_cell()
+        if self.current_table:
+            self.combo_Xrowfrom.clear()
+            self.combo_Xrowto.clear()
+            self.combo_Xcolfrom.clear()
+            self.combo_Xcolto.clear()
+            self.combo_Yrowfrom.clear()
+            self.combo_Yrowto.clear()
+            self.combo_Ycolfrom.clear()
+            self.combo_Ycolto.clear()
+            self.combo_Datarowfrom.clear()
+            self.combo_Datarowto.clear()
+            self.combo_Datacolfrom.clear()
+            self.combo_Datacolto.clear()
+            if self.current_table.columnCount() and self.current_table.rowCount():
+                row_number_list = list(map(str, range(1, self.current_table.rowCount() + 1)))
+                col_number_list = list(map(str, range(1, self.current_table.columnCount() + 1)))
+                self.combo_Xrowfrom.addItems(row_number_list)
+                self.combo_Xrowfrom.setCurrentIndex(0)
+                self.combo_Xrowto.addItems(row_number_list)
+                self.combo_Xrowto.setCurrentIndex(len(row_number_list) - 1)
+                self.combo_Xcolfrom.addItems(col_number_list)
+                self.combo_Xcolfrom.setCurrentIndex(0)
+                self.combo_Xcolto.addItems(col_number_list)
+                self.combo_Xcolto.setCurrentIndex(len(col_number_list) - 1)
+                self.combo_Yrowfrom.addItems(row_number_list)
+                self.combo_Yrowfrom.setCurrentIndex(0)
+                self.combo_Yrowto.addItems(row_number_list)
+                self.combo_Yrowto.setCurrentIndex(len(row_number_list) - 1)
+                self.combo_Ycolfrom.addItems(col_number_list)
+                self.combo_Ycolfrom.setCurrentIndex(0)
+                self.combo_Ycolto.addItems(col_number_list)
+                self.combo_Ycolto.setCurrentIndex(len(col_number_list) - 1)
+                self.combo_Datarowfrom.addItems(row_number_list)
+                self.combo_Datarowfrom.setCurrentIndex(0)
+                self.combo_Datarowto.addItems(row_number_list)
+                self.combo_Datarowto.setCurrentIndex(len(row_number_list) - 1)
+                self.combo_Datacolfrom.addItems(col_number_list)
+                self.combo_Datacolfrom.setCurrentIndex(0)
+                self.combo_Datacolto.addItems(col_number_list)
+                self.combo_Datacolto.setCurrentIndex(len(col_number_list) - 1)
+            self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
+            self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
+            self.select_cell()
 
     def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
         if not self.menuAdd.isEnabled():
@@ -289,21 +236,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.current_table.removeColumn(self.current_table.currentColumn())
         self._change_table()
 
-    def _fill_table(self, data: list):
-        row_number = len(data)
-        max_column_number = max(list(map(len, data)))
-        self.current_table.setRowCount(row_number)
-        self.current_table.setColumnCount(max_column_number)
-
-        for row in range(row_number):
-            row_data = data[row]
-            col = 0
-            while col < len(row_data):
-                self.current_table.setItem(row, col,
-                                           QtWidgets.QTableWidgetItem(data[row][col]))
-                col += 1
-        self._change_table()
-
     def _select_data(self, limits: dict, color: QtGui.QColor):
         pass
 
@@ -311,14 +243,14 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         pass
 
     def add_new_sub_window(self):
-        new_table_widget = MyTableSubWindow()
-        new_table_widget.table.itemSelectionChanged.connect(self.select_cell)
+        new_table_widget = MyTableWidget()
+        new_table_widget.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new data table...')
             title = 'Data ' + str(self.sub_window_number + 1)
             icon = 'UI/New_Icons/add-file.png'
-            new_table_widget.table.setRowCount(1)
-            new_table_widget.table.setColumnCount(1)
+            new_table_widget.setRowCount(1)
+            new_table_widget.setColumnCount(1)
             self._create_sub_window(title, icon, new_table_widget)
         elif self.sender().objectName() == 'actionOutput':
             self.statusbar.showMessage('Creating output table...')
@@ -345,16 +277,16 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     data_file.read_data()
                     title = raw_path
                     icon = 'UI/New_Icons/text-doc.png'
-                    new_table_widget = MyTableSubWindow()
-                    new_table_widget.table.itemSelectionChanged.connect(self.select_cell)
+                    new_table_widget = MyTableWidget()
+                    new_table_widget.itemSelectionChanged.connect(self.select_cell)
                     self._create_sub_window(title, icon, new_table_widget)
-                    self._fill_table(data_file.data)
+                    new_table_widget.add_data(data_file.data)
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
                     msg.setIcon(QtWidgets.QMessageBox.Critical)
                     msg.setText("Data File Open Error")
-                    msg.setInformativeText(f"File {file[0]} is not text data file")
+                    msg.setInformativeText(f"Unable to open {file[0]}. This is probably not text data file")
                     msg.setDetailedText(str(e))
                     msg.setWindowTitle("Error")
                     msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
@@ -401,21 +333,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                         raise Exception(f"This file has not Excel extension ({file_ext}).")
                     title = raw_path
                     icon = 'UI/New_Icons/excel.png'
-                    new_tabs = MyTabSubWindow()
-                    self.current_tabs = new_tabs.tabs
+                    self.current_tabs = MyTabWidget()
                     self.current_tabs.currentChanged.connect(self.tab_change)
-                    number_of_tabs = len(excel_file.data)
-                    if number_of_tabs == 1:
-                        self.current_tabs.setTabsClosable(False)
-                    list_of_keys = list(excel_file.data.keys())
-                    for tab_number in range(0, number_of_tabs):
-                        new_table = QtWidgets.QTableWidget()
-                        new_table.itemSelectionChanged.connect(self.select_cell)
-                        new_table.setObjectName(f"table{tab_number + 1}")
-                        self.current_tabs.addTab(new_table, list_of_keys[tab_number])
-                        self.current_table = new_table
-                        self._fill_table(excel_file.data[list(excel_file.data.keys())[tab_number]])
-                    self._create_sub_window(title, icon, new_tabs)
+                    self.current_tabs.add_data(excel_file.data)
+                    self._create_sub_window(title, icon, self.current_tabs)
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
@@ -449,7 +370,11 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                 try:
                     h5_file.read_h5_data()
                     title = raw_path
-                    icon = 'UI/New_Icons/text-doc.png'
+                    icon = 'UI/New_Icons/hierarchy_diagram.png'
+                    self.current_tabs = MyTabWidget()
+                    self.current_tabs.currentChanged.connect(self.tab_change)
+                    self.current_tabs.add_data(h5_file.data)
+                    self._create_sub_window(title, icon, self.current_tabs)
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
