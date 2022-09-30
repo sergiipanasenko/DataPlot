@@ -31,6 +31,7 @@ class MyTabWidget(QtWidgets.QTabWidget):
         super().__init__()
 
         # default settings
+        self.tables = []
         self.new_tab = None
         self.setUsesScrollButtons(True)
         self.setTabsClosable(True)
@@ -50,10 +51,12 @@ class MyTabWidget(QtWidgets.QTabWidget):
                     self.new_tab = MyTabWidget()
                 else:
                     self.new_tab = MyTableWidget()
+                    self.tables.append(self.new_tab)
                 self.addTab(self.new_tab, keys[tab_number])
                 self.new_tab.add_data(data_val)
         else:
             self.new_tab = MyTableWidget()
+            self.tables.append(self.new_tab)
             self.addTab(self.new_tab, 'Data')
             self.new_tab.add_data(data)
 

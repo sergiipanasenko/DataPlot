@@ -243,21 +243,22 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         pass
 
     def add_new_sub_window(self):
-        new_table_widget = MyTableWidget()
-        new_table_widget.itemSelectionChanged.connect(self.select_cell)
+        new_table = MyTableWidget()
+        new_table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new data table...')
             title = 'Data ' + str(self.sub_window_number + 1)
             icon = 'UI/New_Icons/add-file.png'
-            new_table_widget.setRowCount(1)
-            new_table_widget.setColumnCount(1)
-            self._create_sub_window(title, icon, new_table_widget)
+            new_table.setRowCount(1)
+            new_table.setColumnCount(1)
+            self._create_sub_window(title, icon, new_table)
         elif self.sender().objectName() == 'actionOutput':
             self.statusbar.showMessage('Creating output table...')
             title = 'Output table'
             icon = 'UI/New_Icons/output.png'
-            self._create_sub_window(title, icon, new_table_widget)
+            self._create_sub_window(title, icon, new_table)
             self.actionOutput.setEnabled(False)
+        self.current_table = new_table
 
     def open_data_file(self):
         self.statusbar.showMessage('Data loading from file...')
@@ -277,10 +278,11 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     data_file.read_data()
                     title = raw_path
                     icon = 'UI/New_Icons/text-doc.png'
-                    new_table_widget = MyTableWidget()
-                    new_table_widget.itemSelectionChanged.connect(self.select_cell)
-                    self._create_sub_window(title, icon, new_table_widget)
-                    new_table_widget.add_data(data_file.data)
+                    new_table = MyTableWidget()
+                    new_table.itemSelectionChanged.connect(self.select_cell)
+                    self._create_sub_window(title, icon, new_table)
+                    new_table.add_data(data_file.data)
+                    self.current_table = new_table
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
@@ -337,6 +339,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     self.current_tabs.currentChanged.connect(self.tab_change)
                     self.current_tabs.add_data(excel_file.data)
                     self._create_sub_window(title, icon, self.current_tabs)
+                    self.current_table = self.current_tabs.currentWidget()
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
@@ -371,10 +374,14 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     h5_file.read_h5_data()
                     title = raw_path
                     icon = 'UI/New_Icons/hierarchy_diagram.png'
-                    self.current_tabs = MyTabWidget()
-                    self.current_tabs.currentChanged.connect(self.tab_change)
-                    self.current_tabs.add_data(h5_file.data)
-                    self._create_sub_window(title, icon, self.current_tabs)
+                    new_tab_widget = MyTabWidget()
+                    new_tab_widget.add_data(h5_file.data)
+                    self._create_sub_window(title, icon, new_tab_widget)
+                    self.current_tabs = new_tab_widget
+                    while isinstance(new_tab_widget, MyTabWidget):
+                        new_tab_widget.currentChanged.connect(self.tab_change)
+                        new_tab_widget = new_tab_widget.new_tab
+                    self.current_table = new_tab_widget
                     status = False
                 except Exception as e:
                     msg = QtWidgets.QMessageBox()
@@ -404,8 +411,11 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def tab_change(self, index):
         if index >= 0:
-            self.current_table = self.current_tabs.findChild(QtWidgets.QTableWidget, f"table{index + 1}")
+            tab_widget = self.current_tabs
+            while isinstance(tab_widget.currentWidget(), MyTabWidget):
+                tab_widget = tab_widget.currentWidget()
             self._change_table()
+            self.current_table = tab_widget.currentWidget()
 
     def select_cell(self):
         self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
