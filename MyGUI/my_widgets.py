@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets, QtGui, uic
+from PyQt5 import QtWidgets, QtGui
 
 
 class MyTableWidget(QtWidgets.QTableWidget):
@@ -7,6 +7,7 @@ class MyTableWidget(QtWidgets.QTableWidget):
         super().__init__()
         self.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.setFont(QtGui.QFont("Times", 11, QtGui.QFont.Normal))
 
     def add_data(self, data):
         row_number = len(data)
