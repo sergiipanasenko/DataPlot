@@ -776,9 +776,7 @@ QTabBar::tab
 	color: #ffffff;
 	font-weight: bold;
         font-family: Times New Roman;
-        font-size: 14pt;
-        min-width: 95px;
-
+        font-size: 12pt;
 }
 
 

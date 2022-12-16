@@ -88,7 +88,6 @@ QMenuBar::item:pressed
     border: 1px solid #000;
     margin-bottom: -1px;
     padding-bottom: 1px;
-
 }
 
 
@@ -112,7 +111,6 @@ QMenu::separator
     margin-right: 5px;
 
 }
-
 
 QMenu::item
 {
