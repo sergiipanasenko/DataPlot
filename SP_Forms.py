@@ -88,13 +88,21 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.menuRemove = self.findChild(QtWidgets.QMenu, "menuRemove")
 
         # settings
+        geometry = self.settings.value('Geometry')
+        if geometry:
+            self.restoreGeometry(geometry)
+
+        state = self.settings.value('WindowState')
+        if state:
+            self.restoreState(state)
+
         self.set_style(self.settings.value('theme_checked', type=str))
         current_action = self.settings.value('theme_action_checked', type=str)
         self.findChild(QtWidgets.QAction, current_action).setChecked(True)
-        desktop = QtWidgets.QApplication.desktop()
-        x = (desktop.width() - self.width()) // 2
-        y = (desktop.height() - self.height()) // 2 - 30
-        self.move(x, y)
+        # desktop = QtWidgets.QApplication.desktop()
+        # x = (desktop.width() - self.width()) // 2
+        # y = (desktop.height() - self.height()) // 2 - 30
+        # self.move(x, y)
         self.statusbar.showMessage('Ready')
         self.XChooseColor = QtGui.QColor('green')
         self.YChooseColor = QtGui.QColor('blue')
@@ -420,3 +428,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def select_cell(self):
         self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
         self.label_currentcolumnvalue.setText(str(self.current_table.currentColumn() + 1))
+
+    def closeEvent(self, e):
+        self.settings.setValue('Geometry', self.saveGeometry())
+        self.settings.setValue('WindowState', self.saveState())
+        super().closeEvent(e)
