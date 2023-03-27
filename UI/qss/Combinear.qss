@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 /*-----QWidget-----*/
 QWidget
 {
-	background-color: #3a3a3a;
+	background-color: #404040;
 	color: #fff;
 	selection-background-color: #b38867;
 	selection-color: #000;
@@ -588,7 +588,7 @@ QTableCornerButton::section
 QTreeView
 {
 	show-decoration-selected: 1;
-	alternate-background-color: #3a3a3a;
+	alternate-background-color: #404040;
 	selection-color: #fff;
 	background-color: #2d2d2d;
 	border: 1px solid gray;
@@ -665,7 +665,7 @@ QListView::item
 
 QListView::item:alternate 
 {
-    background-color: #3a3a3a;
+    background-color: #404040;
 
 }
 

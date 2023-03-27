@@ -99,10 +99,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.set_style(self.settings.value('theme_checked', type=str))
         current_action = self.settings.value('theme_action_checked', type=str)
         self.findChild(QtWidgets.QAction, current_action).setChecked(True)
-        # desktop = QtWidgets.QApplication.desktop()
-        # x = (desktop.width() - self.width()) // 2
-        # y = (desktop.height() - self.height()) // 2 - 30
-        # self.move(x, y)
         self.statusbar.showMessage('Ready')
         self.XChooseColor = QtGui.QColor('green')
         self.YChooseColor = QtGui.QColor('blue')
