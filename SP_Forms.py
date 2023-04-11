@@ -9,8 +9,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         # parent initialisation
         super().__init__()
 
-        # UI loading
-        uic.loadUi('UI/MyForm3.ui', self)
+        # ui loading
+        uic.loadUi('ui/MyForm4.ui', self)
 
         # new fields
         self.sub_window = None
@@ -26,6 +26,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
 
+        # Settings/Themes
         self.actionDefault = self.findChild(QtWidgets.QAction, "actionDefault")
         self.actionAdaptic = self.findChild(QtWidgets.QAction, "actionAdaptic")
         self.actionCombinear = self.findChild(QtWidgets.QAction, "actionCombinear")
@@ -35,17 +36,27 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionFibers = self.findChild(QtWidgets.QAction, "actionFibers")
         self.actionIrrorater = self.findChild(QtWidgets.QAction, "actionIrrorater")
         self.actionPerstfic = self.findChild(QtWidgets.QAction, "actionPerstfic")
+
+        # File
         self.actionNew = self.findChild(QtWidgets.QAction, "actionNew")
         self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
-        self.actionExcel = self.findChild(QtWidgets.QAction, "actionExcel")
-        self.actionHDF5 = self.findChild(QtWidgets.QAction, "actionHDF5")
         self.actionOutput = self.findChild(QtWidgets.QAction, "actionOutput")
         self.actionSave = self.findChild(QtWidgets.QAction, "actionSave")
         self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
+
+        # Settings/Font
         self.actionFont = self.findChild(QtWidgets.QAction, "actionFont")
+
+        # Window
         self.actionTiled = self.findChild(QtWidgets.QAction, "actionTiled")
         self.actionCascaded = self.findChild(QtWidgets.QAction, "actionCascaded")
+
+        # Help
         self.actionAbout = self.findChild(QtWidgets.QAction, "actionAbout")
+
+        # Table
+        self.menuAdd = self.findChild(QtWidgets.QMenu, "menuAdd")
+        self.menuRemove = self.findChild(QtWidgets.QMenu, "menuRemove")
         self.actionRow_above = self.findChild(QtWidgets.QAction, "actionRow_above")
         self.actionRow_below = self.findChild(QtWidgets.QAction, "actionRow_below")
         self.actionColumn_left = self.findChild(QtWidgets.QAction, "actionColumn_left")
@@ -53,12 +64,14 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionRow = self.findChild(QtWidgets.QAction, "actionRow")
         self.actionColumn = self.findChild(QtWidgets.QAction, "actionColumn")
 
+        # Buttons
         self.push_add = self.findChild(QtWidgets.QPushButton, "push_add")
         self.push_remove = self.findChild(QtWidgets.QPushButton, "push_remove")
         self.push_reset = self.findChild(QtWidgets.QPushButton, "push_reset")
         self.push_next = self.findChild(QtWidgets.QPushButton, "push_next")
         self.push_cancel = self.findChild(QtWidgets.QPushButton, "push_cancel")
 
+        # Combos
         self.combo_Xcolfrom = self.findChild(QtWidgets.QComboBox, "combo_Xcolfrom")
         self.combo_Xcolto = self.findChild(QtWidgets.QComboBox, "combo_Xcolto")
         self.combo_Xrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Xrowfrom")
@@ -77,15 +90,14 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.combo_Datarowto = self.findChild(QtWidgets.QComboBox, "combo_Datarowto")
         self.combo_wise = self.findChild(QtWidgets.QComboBox, "combo_wise")
 
+        # Labels
         self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
         self.label_totalcolumnvalue = self.findChild(QtWidgets.QLabel, "label_totalcolumnvalue")
         self.label_currentrowvalue = self.findChild(QtWidgets.QLabel, "label_currentrowvalue")
         self.label_currentcolumnvalue = self.findChild(QtWidgets.QLabel, "label_currentcolumnvalue")
 
+        # MDI area
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
-
-        self.menuAdd = self.findChild(QtWidgets.QMenu, "menuAdd")
-        self.menuRemove = self.findChild(QtWidgets.QMenu, "menuRemove")
 
         # settings
         geometry = self.settings.value('Geometry')
@@ -125,20 +137,18 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
         self.actionNew.triggered.connect(self.add_new_sub_window)
         self.actionOpen.triggered.connect(self.open_data_file)
-        self.actionExcel.triggered.connect(self.open_excel_file)
-        self.actionHDF5.triggered.connect(self.open_h5_file)
         self.actionOutput.triggered.connect(self.add_new_sub_window)
         self.actionSave.triggered.connect(self.save_file)
 
         self.actionDefault.triggered.connect(lambda: self.set_style(''))
-        self.actionAdaptic.triggered.connect(lambda: self.set_style('UI/qss/Adaptic.qss'))
-        self.actionCombinear.triggered.connect(lambda: self.set_style('UI/qss/Combinear.qss'))
-        self.actionDarkeum.triggered.connect(lambda: self.set_style('UI/qss/Darkeum.qss'))
-        self.actionDiplaytap.triggered.connect(lambda: self.set_style('UI/qss/Diplaytap.qss'))
-        self.actionEasyCode.triggered.connect(lambda: self.set_style('UI/qss/EasyCode.qss'))
-        self.actionFibers.triggered.connect(lambda: self.set_style('UI/qss/Fibers.qss'))
-        self.actionIrrorater.triggered.connect(lambda: self.set_style('UI/qss/Irrorater.qss'))
-        self.actionPerstfic.triggered.connect(lambda: self.set_style('UI/qss/Perstfic.qss'))
+        self.actionAdaptic.triggered.connect(lambda: self.set_style('ui/qss/Adaptic.qss'))
+        self.actionCombinear.triggered.connect(lambda: self.set_style('ui/qss/Combinear.qss'))
+        self.actionDarkeum.triggered.connect(lambda: self.set_style('ui/qss/Darkeum.qss'))
+        self.actionDiplaytap.triggered.connect(lambda: self.set_style('ui/qss/Diplaytap.qss'))
+        self.actionEasyCode.triggered.connect(lambda: self.set_style('ui/qss/EasyCode.qss'))
+        self.actionFibers.triggered.connect(lambda: self.set_style('ui/qss/Fibers.qss'))
+        self.actionIrrorater.triggered.connect(lambda: self.set_style('ui/qss/Irrorater.qss'))
+        self.actionPerstfic.triggered.connect(lambda: self.set_style('ui/qss/Perstfic.qss'))
 
         self.actionTiled.triggered.connect(self.mdiArea.tileSubWindows)
         self.actionCascaded.triggered.connect(self.mdiArea.cascadeSubWindows)
@@ -252,154 +262,18 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new data table...')
             title = 'Data ' + str(self.sub_window_number + 1)
-            icon = 'UI/New_Icons/add-file.png'
+            icon = 'ui/New_Icons/add-file.png'
             new_table.setRowCount(1)
             new_table.setColumnCount(1)
             self._create_sub_window(title, icon, new_table)
         elif self.sender().objectName() == 'actionOutput':
             self.statusbar.showMessage('Creating output table...')
             title = 'Output table'
-            icon = 'UI/New_Icons/output.png'
+            icon = 'ui/New_Icons/output.png'
             self._create_sub_window(title, icon, new_table)
             self.actionOutput.setEnabled(False)
         self.current_table = new_table
 
-    def open_data_file(self):
-        self.statusbar.showMessage('Data loading from file...')
-        status = True
-        while status:
-            recent_directory = self.settings.value('recent_directory', type=str)
-            file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
-                                                         caption="Open data file",
-                                                         directory=recent_directory,
-                                                         filter="All files (*);;Text files (*.dat *.txt)",
-                                                         initialFilter="Text files (*.dat *.txt)")
-            if file[0]:
-                self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
-                raw_path = r'{}'.format(file[0])
-                data_file = MyDataFile(raw_path)
-                try:
-                    data_file.read_data()
-                    title = raw_path
-                    icon = 'UI/New_Icons/text-doc.png'
-                    new_table = MyTableWidget()
-                    new_table.itemSelectionChanged.connect(self.select_cell)
-                    self._create_sub_window(title, icon, new_table)
-                    new_table.add_data(data_file.data)
-                    self.current_table = new_table
-                    status = False
-                except Exception as e:
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Critical)
-                    msg.setText("Data File Open Error")
-                    msg.setInformativeText(f"Unable to open {file[0]}. This is probably not text data file")
-                    msg.setDetailedText(str(e))
-                    msg.setWindowTitle("Error")
-                    msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
-                    msg.exec_()
-                    if msg.clickedButton().text() == 'OK':
-                        status = False
-            else:
-                status = False
-
-    def save_file(self):
-        file = QtWidgets.QFileDialog.getSaveFileName(parent=self,
-                                                     caption="Save data file",
-                                                     directory=QtCore.QDir.currentPath(),
-                                                     filter="Text files (*.dat *.txt)",
-                                                     initialFilter="Text files (*.dat *.txt)")
-
-    def open_excel_file(self):
-        self.statusbar.showMessage('Excel Book loading from file...')
-        status = True
-        while status:
-            recent_directory = self.settings.value('recent_directory', type=str)
-            file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
-                                                         caption="Open Excel file",
-                                                         directory=recent_directory,
-                                                         filter="All files (*.*);;"
-                                                                "Excel Workbooks (*.xlsx *.xlsm);;"
-                                                                "Excel Binary Workbooks (*.xlsb);;"
-                                                                "Excel templates (*.xltx *.xltm);;"
-                                                                "Excel Workbooks 97-2003 (*.xls)",
-                                                         initialFilter="Excel Workbooks (*.xlsx *.xlsm)")
-            if file[0]:
-                self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
-                raw_path = r'{}'.format(file[0])
-                file_ext = splitext(raw_path)[1]
-                excel_file = MyExcelFile(raw_path)
-                try:
-                    if file_ext in ('.xlsx', '.xlsm', '.xltx', '.xltm'):
-                        excel_file.read_new_book()
-                    elif file_ext == '.xlsb':
-                        excel_file.read_binary_book()
-                    elif file_ext == '.xls':
-                        excel_file.read_old_book()
-                    else:
-                        raise Exception(f"This file has not Excel extension ({file_ext}).")
-                    title = raw_path
-                    icon = 'UI/New_Icons/excel.png'
-                    self.current_tabs = MyTabWidget()
-                    self.current_tabs.currentChanged.connect(self.tab_change)
-                    self.current_tabs.add_data(excel_file.data)
-                    self._create_sub_window(title, icon, self.current_tabs)
-                    self.current_table = self.current_tabs.currentWidget()
-                    status = False
-                except Exception as e:
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Critical)
-                    msg.setText("Excel File Open Error")
-                    msg.setInformativeText(f"File {file[0]} is not Excel file")
-                    msg.setDetailedText(str(e))
-                    msg.setWindowTitle("Error")
-                    msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
-                    msg.exec_()
-                    if msg.clickedButton().text() == 'OK':
-                        status = False
-            else:
-                status = False
-
-    def open_h5_file(self):
-        self.statusbar.showMessage('HDF5 data loading from file...')
-        status = True
-        while status:
-            recent_directory = self.settings.value('recent_directory', type=str)
-            file = QtWidgets.QFileDialog.getOpenFileName(parent=self,
-                                                         caption="Open HDF5 file",
-                                                         directory=recent_directory,
-                                                         filter="All files (*.*);;"
-                                                                "HDF5 files (*.h5 *.hdf *.hdf5)",
-                                                         initialFilter="HDF5 files (*.h5 *.hdf *.hdf5)")
-            if file[0]:
-                self.settings.setValue('recent_directory', QtCore.QFileInfo(file[0]).path())
-                raw_path = r'{}'.format(file[0])
-                h5_file = MyHDF5File(raw_path)
-                try:
-                    h5_file.read_h5_data()
-                    title = raw_path
-                    icon = 'UI/New_Icons/hierarchy_diagram.png'
-                    new_tab_widget = MyTabWidget()
-                    new_tab_widget.add_data(h5_file.data)
-                    self._create_sub_window(title, icon, new_tab_widget)
-                    self.current_tabs = new_tab_widget
-                    while isinstance(new_tab_widget, MyTabWidget):
-                        new_tab_widget.currentChanged.connect(self.tab_change)
-                        new_tab_widget = new_tab_widget.new_tab
-                    self.current_table = new_tab_widget
-                    status = False
-                except Exception as e:
-                    msg = QtWidgets.QMessageBox()
-                    msg.setIcon(QtWidgets.QMessageBox.Critical)
-                    msg.setText("HDF% File Open Error")
-                    msg.setInformativeText(f"File {file[0]} is not HDF5 file")
-                    msg.setDetailedText(str(e))
-                    msg.setWindowTitle("Error")
-                    msg.setStandardButtons(QtWidgets.QMessageBox.Retry | QtWidgets.QMessageBox.Ok)
-                    msg.exec_()
-                    if msg.clickedButton().text() == 'OK':
-                        status = False
-            else:
-                status = False
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()

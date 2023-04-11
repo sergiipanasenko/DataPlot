@@ -1,9 +1,8 @@
-from os.path import getmtime
 import h5py as h5
-from .my_file import MyFile
+from .my_file import MyFile, IData
 
 
-class MyHDF5File(MyFile):
+class MyHDF5File(MyFile, IData):
     def __init__(self, file_name=None):
         MyFile.__init__(self, file_name)
         self.data = dict()
@@ -24,8 +23,8 @@ class MyHDF5File(MyFile):
                 output[key] = MyHDF5File.parse_h5_data(data[key])
             return output
 
-    def read_h5_data(self, file_name=None):
-        if (self.file_name != file_name) or (self.mod_time != getmtime(file_name)):
-            self._change_file_name(file_name)
-            with h5.File(self.file_name, 'r') as h5_file:
-                self.data = self.parse_h5_data(h5_file)
+    def read_data(self, file_name=None):
+        if self.check_file_name(file_name) is not None:
+            with h5.File(self.get_file_name(), 'r') as h5_file:
+                data = self.parse_h5_data(h5_file)
+            self.set_data(data)
