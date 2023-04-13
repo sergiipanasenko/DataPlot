@@ -98,3 +98,4 @@ class MyExcelFile(MyFile, IData, IFileType):
         excel_file = self.get_type_dict()[excel_file_type](file_name)
         excel_file.read_data()
         self.set_data(excel_file.get_data())
+        self.set_file_type(excel_file_type)

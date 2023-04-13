@@ -6,8 +6,9 @@ from my_qt_files import MyQtFile
 icons = {
     'text': 'ui/New_Icons/text-doc.png',
     'excel': 'ui/New_Icons/excel.png',
-    'hdf5': 'ui/New_Icons/hierarchical-structure.png'
+    'hdf5': 'ui/New_Icons/hierarchy_diagram.png'
 }
+
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def __init__(self):
@@ -174,7 +175,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         qt_file = MyQtFile(parent=self, recent_dir=recent_directory)
         qt_file.read_data()
         title = qt_file.get_file_name()
-        icon = icons['text']
+        icon = icons[qt_file.get_file_type()]
 
         self.current_tabs = MyTabWidget()
         # self.current_tabs.currentChanged.connect(self.tab_change)
