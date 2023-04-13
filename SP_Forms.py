@@ -1,5 +1,5 @@
-from os.path import splitext
-from PyQt5 import QtCore, QtWidgets, QtGui, uic
+# from os.path import splitext
+from PyQt5 import QtWidgets, QtGui, uic
 from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
 
 
@@ -135,9 +135,9 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         # connections
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
         self.actionNew.triggered.connect(self.add_new_sub_window)
-        self.actionOpen.triggered.connect(self.open_data_file)
+        self.actionOpen.triggered.connect(self.open)
         self.actionOutput.triggered.connect(self.add_new_sub_window)
-        self.actionSave.triggered.connect(self.save_file)
+        # self.actionSave.triggered.connect(self.save_file)
 
         self.actionDefault.triggered.connect(lambda: self.set_style(''))
         self.actionAdaptic.triggered.connect(lambda: self.set_style('ui/qss/Adaptic.qss'))
@@ -261,7 +261,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def add_new_sub_window(self):
         new_table = MyTableWidget()
-        new_table.itemSelectionChanged.connect(self.select_cell)
+        # new_table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new data table...')
             title = 'Data ' + str(self.sub_window_number + 1)
@@ -276,7 +276,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self._create_sub_window(title, icon, new_table)
             self.actionOutput.setEnabled(False)
         self.current_table = new_table
-
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
