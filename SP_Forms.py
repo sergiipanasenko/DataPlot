@@ -162,6 +162,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         self.mdiArea.subWindowActivated.connect(self.sub_window_change)
 
+    def open(self):
+        recent_directory = self.settings.value('recent_directory', type=str)
+        self.statusbar.showMessage('Data loading from file...')
+
     def _change_table(self):
         if self.current_table:
             self.combo_Xrowfrom.clear()
