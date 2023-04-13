@@ -29,6 +29,6 @@ class MyDataFile(MyFile, IData, IFileType):
                 data_file_type = 'text'
         else:
             self.check_file_type(data_file_type)
-        data_file = self.get_type_dict()[data_file_type](file_name)
+        data_file = self.get_type_dict()[data_file_type][0](file_name)
         data_file.read_data()
         self.set_data(data_file.get_data())

@@ -36,6 +36,7 @@ class MyQtFile:
                 try:
                     data_file.read_data()
                     print(data_file.get_data())
+                    try_open = False
                 except Exception as e:
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Critical)

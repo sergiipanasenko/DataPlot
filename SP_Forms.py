@@ -1,6 +1,7 @@
 # from os.path import splitext
 from PyQt5 import QtWidgets, QtGui, uic
 from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
+from my_qt_files import MyQtFile
 
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
@@ -165,6 +166,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def open(self):
         recent_directory = self.settings.value('recent_directory', type=str)
         self.statusbar.showMessage('Data loading from file...')
+        temp_file = MyQtFile(parent=self, recent_dir=recent_directory)
+        temp_file.open_file()
 
     def _change_table(self):
         if self.current_table:
