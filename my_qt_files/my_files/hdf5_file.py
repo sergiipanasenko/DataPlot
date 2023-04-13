@@ -4,8 +4,7 @@ from .my_file import MyFile, IData
 
 class MyHDF5File(MyFile, IData):
     def __init__(self, file_name=None):
-        MyFile.__init__(self, file_name)
-        self.data = dict()
+        super().__init__(file_name)
 
     @staticmethod
     def parse_h5_data(data):
@@ -24,7 +23,7 @@ class MyHDF5File(MyFile, IData):
             return output
 
     def read_data(self, file_name=None):
-        if self.check_file_name(file_name) is not None:
-            with h5.File(self.get_file_name(), 'r') as h5_file:
-                data = self.parse_h5_data(h5_file)
-            self.set_data(data)
+        file_name = self.check_file_name(file_name)
+        with h5.File(file_name, 'r') as h5_file:
+            data = self.parse_h5_data(h5_file)
+        self.set_data(data)

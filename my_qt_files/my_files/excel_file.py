@@ -82,15 +82,15 @@ excel_file_matching = {
 
 
 class MyExcelFile(MyFile, IData, IFileType):
-    def __init__(self, file_name=None, file_type=None):
+    def __init__(self, file_name=None, excel_file_type=None):
         super().__init__(file_name)
-        self.set_file_type(file_type)
+        self.set_file_type(excel_file_type)
         self.set_type_dict(excel_file_matching)
 
-    def read_data(self, file_name=None):
+    def read_data(self, file_name=None, excel_file_type=None):
         file_name = self.check_file_name(file_name)
-        if self.get_file_type() is None:
-            self.set_file_type(file_name.split('.')[-1])
-        excel_file = self.get_type_dict()[self.get_file_type()](file_name)
+        if excel_file_type is None:
+            excel_file_type = file_name.split('.')[-1]
+        excel_file = self.get_type_dict()[excel_file_type](file_name)
         excel_file.read_data()
         self.set_data(excel_file.get_data())
