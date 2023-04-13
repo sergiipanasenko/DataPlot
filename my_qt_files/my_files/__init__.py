@@ -1,4 +1,5 @@
 from .my_file import MyFile, IData, IText, IFileType
+from .my_file import DataTypeMismatchError, FileNotSpecifiedError
 from .text_file import MyTextFile, MyTextDataFile
 from .excel_file import MyExcelFile, excel_file_matching
 from .excel_file import MyNewExcelFile, MyOldExcelFile, MyBinaryExcelFile

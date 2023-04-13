@@ -1,8 +1,13 @@
-# from os.path import splitext
 from PyQt5 import QtWidgets, QtGui, uic
 from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
 from my_qt_files import MyQtFile
 
+
+icons = {
+    'text': 'ui/New_Icons/text-doc.png',
+    'excel': 'ui/New_Icons/excel.png',
+    'hdf5': 'ui/New_Icons/hierarchical-structure.png'
+}
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def __init__(self):
@@ -166,8 +171,21 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def open(self):
         recent_directory = self.settings.value('recent_directory', type=str)
         self.statusbar.showMessage('Data loading from file...')
-        temp_file = MyQtFile(parent=self, recent_dir=recent_directory)
-        temp_file.open_file()
+        qt_file = MyQtFile(parent=self, recent_dir=recent_directory)
+        qt_file.read_data()
+        title = qt_file.get_file_name()
+        icon = icons['text']
+
+        self.current_tabs = MyTabWidget()
+        # self.current_tabs.currentChanged.connect(self.tab_change)
+        self.current_tabs.add_data(qt_file.get_data())
+        self._create_sub_window(title, icon, self.current_tabs)
+        self.current_table = self.current_tabs.currentWidget()
+        # new_table = MyTableWidget()
+        # # new_table.itemSelectionChanged.connect(self.select_cell)
+        # self._create_sub_window(title, icon, new_table)
+        # new_table.add_data(qt_file.get_data()['data'])
+        # self.current_table = new_table
 
     def _change_table(self):
         if self.current_table:

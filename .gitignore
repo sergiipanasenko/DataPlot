@@ -4,3 +4,4 @@
 *.dat
 /Icons/*.zip
 /__pycache__/
+settings.ini

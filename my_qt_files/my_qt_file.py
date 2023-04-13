@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtCore import QFileInfo, QDir
-from my_qt_files.my_files import MyDataFile
+from .my_files import MyDataFile, IData, MyFile, IFileType
 
 file_desc = (
     "All files (*.*)",
@@ -13,13 +13,13 @@ file_desc = (
 )
 
 
-class MyQtFile:
+class MyQtFile(MyFile, IData, IFileType):
     def __init__(self, parent, recent_dir=None):
         super().__init__()
         self.recent_dir = recent_dir
         self.parent = parent
 
-    def open_file(self):
+    def read_data(self, file_name=None):
         try_open = True
         while try_open:
             file = QFileDialog.getOpenFileName(
@@ -29,13 +29,15 @@ class MyQtFile:
                 filter=';;'.join(file_desc),
                 initialFilter=file_desc[0])
             if file[0]:
+                self.set_file_name(file[0])
                 self.parent.settings.setValue(
                     'recent_directory', QFileInfo(file[0]).path())
                 raw_path = r'{}'.format(file[0])
                 data_file = MyDataFile(raw_path)
                 try:
                     data_file.read_data()
-                    print(data_file.get_data())
+                    self.set_file_type(data_file.get_file_type())
+                    self.set_data(data_file.get_data())
                     try_open = False
                 except Exception as e:
                     msg = QMessageBox()
@@ -60,23 +62,3 @@ class MyQtFile:
             directory=QDir.currentPath(),
             filter="Text files (*.dat *.txt)",
             initialFilter="Text files (*.dat *.txt)")
-
-
-# title = raw_path
-# icon = 'ui/New_Icons/text-doc.png'
-# new_table = MyTableWidget()
-# new_table.itemSelectionChanged.connect(self.select_cell)
-# self._create_sub_window(title, icon, new_table)
-# new_table.add_data(data_file.data)
-# self.current_table = new_table
-# try:
-# if file_ext in ('.xlsx', '.xlsm', '.xltx', '.xltm'):
-# else:
-# raise Exception(f"This file has not Excel extension ({file_ext}).")
-# title = raw_path
-# icon = 'ui/New_Icons/excel.png'
-# self.current_tabs = MyTabWidget()
-# self.current_tabs.currentChanged.connect(self.tab_change)
-# self.current_tabs.add_data(excel_file.data)
-# self._create_sub_window(title, icon, self.current_tabs)
-# self.current_table = self.current_tabs.currentWidget()
