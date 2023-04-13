@@ -12,8 +12,10 @@ data_file_matching = {
 class MyDataFile(MyFile, IData, IFileType):
     def __init__(self, file_name=None, data_file_type=None):
         super().__init__(file_name)
-        self.set_file_type(data_file_type)
         self.set_type_dict(data_file_matching)
+        if data_file_type is not None:
+            self.check_file_type(data_file_type)
+        self.set_file_type(data_file_type)
 
     def read_data(self, file_name=None, data_file_type=None):
         file_name = self.check_file_name(file_name)
@@ -25,6 +27,8 @@ class MyDataFile(MyFile, IData, IFileType):
                 data_file_type = 'hdf5'
             else:
                 data_file_type = 'text'
+        else:
+            self.check_file_type(data_file_type)
         data_file = self.get_type_dict()[data_file_type](file_name)
         data_file.read_data()
         self.set_data(data_file.get_data())

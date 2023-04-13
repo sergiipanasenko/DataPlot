@@ -90,10 +90,6 @@ class IFileType:
     def get_type_dict(self):
         return self.__type_dict
 
-    def check_file_type(self, file_type=None):
-        if file_type is None:
-            file_type = self.get_file_type()
+    def check_file_type(self, file_type):
         if file_type not in self.get_type_dict().keys():
             raise DataTypeMismatchError
-        return file_type
-
