@@ -73,10 +73,10 @@ class IData:
 
 
 class IFileType:
-    def __init__(self, file_type=None, type_dict=None):
+    def __init__(self):
         super().__init__()
-        self.__file_type = file_type
-        self.__type_dict = type_dict
+        self.__file_type = None
+        self.__type_dict = None
 
     def set_file_type(self, file_type):
         self.__file_type = file_type
