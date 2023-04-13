@@ -1,7 +1,6 @@
 from os.path import splitext
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from MyFiles import MyDataFile, MyExcelFile, MyHDF5File
-from MyGUI import MyAbstractForm, MyTableWidget, MyTabWidget
+from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
 
 
 class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
