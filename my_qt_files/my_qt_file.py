@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtCore import QFileInfo, QDir, QObject, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QFileInfo, QDir, QObject, QThread, pyqtSignal
 from .my_files import MyDataFile, IData, MyFile, IFileType, DataTypeMismatchError
 
 file_desc = (
@@ -15,6 +15,7 @@ file_desc = (
 
 class DataReaderThread(QObject):
     finished = pyqtSignal(MyDataFile)
+    finished_error = pyqtSignal()
 
     def __init__(self, file_name):
         super().__init__()
@@ -25,8 +26,8 @@ class DataReaderThread(QObject):
             data_file = MyDataFile(self.file_name)
             data_file.read_data()
             self.finished.emit(data_file)
-        except DataTypeMismatchError:
-            self.finished.emit(None)
+        except Exception:
+            self.finished_error.emit()
 
 
 class MyQtFile(MyFile, IData, IFileType, QObject):
@@ -39,7 +40,7 @@ class MyQtFile(MyFile, IData, IFileType, QObject):
         self.thread = None
         self.worker = None
 
-    def finish_data_read(self, data_file):
+    def finish_data_read(self, data_file=None):
         if data_file is not None:
             try_open_again = False
             self.set_data(data_file.get_data())
@@ -77,6 +78,8 @@ class MyQtFile(MyFile, IData, IFileType, QObject):
             self.thread.started.connect(self.worker.run)
             self.worker.finished.connect(self.thread.quit)
             self.worker.finished.connect(self.finish_data_read)
+            self.worker.finished_error.connect(self.thread.quit)
+            self.worker.finished_error.connect(self.finish_data_read)
             self.thread.start()
 
     def save_file(self):

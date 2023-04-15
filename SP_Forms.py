@@ -180,14 +180,15 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def _post_open(self):
         sender = self.sender()
-        title = sender.get_file_name()
+        title = f'Data {self.sub_window_number + 1}. {sender.get_file_name()}'
         icon = icons[sender.get_file_type()]
         self.current_tabs = MyTabWidget()
         self.current_tabs.add_data(sender.get_data())
-        self.qt_files.remove(sender)
         self._create_sub_window(title, icon, self.current_tabs)
         self.current_table = self.current_tabs.currentWidget()
         self.statusbar.showMessage('')
+        self.current_tabs.add_data_finished.connect(
+            lambda: self.qt_files.remove(sender))
 
     def _change_table(self):
         if self.current_table:
@@ -287,7 +288,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         # new_table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new data table...')
-            title = 'Data ' + str(self.sub_window_number + 1)
+            title = f'Data {self.sub_window_number + 1}'
             icon = 'ui/New_Icons/add-file.png'
             new_table.setRowCount(1)
             new_table.setColumnCount(1)
