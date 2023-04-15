@@ -64,11 +64,14 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1,1">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinAndMaxSize</enum>
+        </property>
         <item>
          <widget class="QFrame" name="LeftFrame">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -110,7 +113,7 @@
               <locale language="English" country="UnitedStates"/>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="tab_XValues">
               <attribute name="title">
@@ -127,7 +130,7 @@
                <item row="0" column="3">
                 <widget class="QComboBox" name="combo_Xcolto">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -159,7 +162,7 @@
                <item row="1" column="3">
                 <widget class="QComboBox" name="combo_Xrowto">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -167,7 +170,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -175,7 +178,7 @@
                <item row="0" column="1">
                 <widget class="QComboBox" name="combo_Xcolfrom">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -183,7 +186,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -191,7 +194,7 @@
                <item row="1" column="1">
                 <widget class="QComboBox" name="combo_Xrowfrom">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -199,7 +202,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -225,6 +228,12 @@
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_Xcols">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Columns from</string>
                  </property>
@@ -233,7 +242,7 @@
                <item row="1" column="0">
                 <widget class="QLabel" name="label_Xrows">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -712,6 +721,12 @@
              </property>
              <item>
               <widget class="QComboBox" name="combo_wise">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="font">
                 <font>
                  <family>Times New Roman</family>
@@ -1055,8 +1070,14 @@
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
+          <item alignment="Qt::AlignTop">
            <widget class="QFrame" name="frame">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>270</width>
