@@ -28,6 +28,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.x_values = dict()
         self.y_values = dict()
         self.data_values = dict()
+        self.qt_file = None
 
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
@@ -172,21 +173,17 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def open(self):
         recent_directory = self.settings.value('recent_directory', type=str)
         self.statusbar.showMessage('Data loading from file...')
-        qt_file = MyQtFile(parent=self, recent_dir=recent_directory)
-        qt_file.read_data()
-        title = qt_file.get_file_name()
-        icon = icons[qt_file.get_file_type()]
+        self.qt_file = MyQtFile(parent=self, recent_dir=recent_directory)
+        self. qt_file.read_data()
+        self.qt_file.finished.connect(self._post_open)
 
+    def _post_open(self):
+        title = self.qt_file.get_file_name()
+        icon = icons[self.qt_file.get_file_type()]
         self.current_tabs = MyTabWidget()
-        # self.current_tabs.currentChanged.connect(self.tab_change)
-        self.current_tabs.add_data(qt_file.get_data())
+        self.current_tabs.add_data(self.qt_file.get_data())
         self._create_sub_window(title, icon, self.current_tabs)
         self.current_table = self.current_tabs.currentWidget()
-        # new_table = MyTableWidget()
-        # # new_table.itemSelectionChanged.connect(self.select_cell)
-        # self._create_sub_window(title, icon, new_table)
-        # new_table.add_data(qt_file.get_data()['data'])
-        # self.current_table = new_table
 
     def _change_table(self):
         if self.current_table:
