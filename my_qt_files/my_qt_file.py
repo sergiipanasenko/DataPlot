@@ -67,11 +67,12 @@ class MyQtFile(MyFile, IData, IFileType, QObject):
                 caption="Open data file",
                 directory=self.recent_dir,
                 filter=';;'.join(file_desc),
-                initialFilter=file_desc[0])
+                initialFilter=file_desc[0],
+                options=QFileDialog.DontUseNativeDialog)
         if file[0]:
             self.set_file_name(file[0])
             self.parent.settings.setValue(
-                'recent_directory', QFileInfo(file[0]).path())
+                'recent_directory', QFileInfo(self.get_file_name()).path())
             self.thread = QThread()
             self.worker = DataReaderThread(self.get_file_name())
             self.worker.moveToThread(self.thread)

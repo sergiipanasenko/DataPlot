@@ -27,7 +27,6 @@ QWidget
 	color: #fff;
 	selection-background-color: #b38867;
 	selection-color: #000;
-
 }
 
 
