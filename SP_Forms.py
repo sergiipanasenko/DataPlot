@@ -29,6 +29,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.y_values = dict()
         self.data_values = dict()
         self.qt_files = list()
+        self.sub_windows = dict()
 
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
@@ -55,6 +56,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionFont = self.findChild(QtWidgets.QAction, "actionFont")
 
         # Window
+        self.menuWindow = self.findChild(QtWidgets.QMenu, 'menuWindow')
         self.actionTiled = self.findChild(QtWidgets.QAction, "actionTiled")
         self.actionCascaded = self.findChild(QtWidgets.QAction, "actionCascaded")
 
@@ -123,7 +125,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.YChooseColor = QtGui.QColor('blue')
         self.DataChooseColor = QtGui.QColor('yellow')
 
-        # action_group1
+        # action group 1
         self.themes = QtWidgets.QActionGroup(self)
         self.themes.addAction(self.actionDefault)
         self.themes.addAction(self.actionAdaptic)
@@ -135,10 +137,13 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.themes.addAction(self.actionIrrorater)
         self.themes.addAction(self.actionPerstfic)
 
-        # action_group2
+        # action group 2
         self.layout = QtWidgets.QActionGroup(self)
         self.layout.addAction(self.actionTiled)
         self.layout.addAction(self.actionCascaded)
+
+        # action group 3
+        self.data_windows = QtWidgets.QActionGroup(self)
 
         # connections
         self.actionExit.triggered.connect(QtWidgets.qApp.quit)
@@ -157,6 +162,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionIrrorater.triggered.connect(lambda: self.set_style('ui/qss/Irrorater.qss'))
         self.actionPerstfic.triggered.connect(lambda: self.set_style('ui/qss/Perstfic.qss'))
 
+        self.menuWindow.aboutToShow.connect(self.update_windows)
         self.actionTiled.triggered.connect(self.mdiArea.tileSubWindows)
         self.actionCascaded.triggered.connect(self.mdiArea.cascadeSubWindows)
 
@@ -189,6 +195,25 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.statusbar.showMessage('')
         self.current_tabs.add_data_finished.connect(
             lambda: self.qt_files.remove(sender))
+
+    def update_windows(self):
+        menu = self.menuWindow
+        menu.clear()
+        menu.addActions((self.actionTiled, self.actionCascaded))
+        window_list = self.mdiArea.subWindowList()
+        if window_list:
+            menu.addSeparator()
+            for window in window_list:
+                window_title = window.windowTitle()
+                window_icon = window.windowIcon()
+                new_action = menu.addAction(window_icon, window_title)
+                new_action.setCheckable(True)
+                self.data_windows.addAction(new_action)
+                self.sub_windows[new_action.iconText()] = window
+                new_action.triggered.connect(
+                    lambda: self.mdiArea.setActiveSubWindow(
+                        self.sub_windows[self.sender().iconText()]
+                    ))
 
     def _change_table(self):
         if self.current_table:
