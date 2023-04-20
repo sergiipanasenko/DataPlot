@@ -115,7 +115,15 @@ QMenu::item:selected
 	background-color: rgba(137, 110, 105, 20%);
 	border: 1px solid #b38867;
 	color: #fff;
+}
 
+QMenu::item:checked
+{
+    color: #ffff40;
+}
+
+QMenu::icon:checked {
+    background: #ffff40;
 }
 
 

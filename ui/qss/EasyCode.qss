@@ -119,6 +119,14 @@ QMenu::indicator
 
 }
 
+QMenu::item:checked
+{
+    color: #4040FF;
+}
+
+QMenu::icon:checked {
+    background: #4040FF;
+}
 
 /*-----QToolBar-----*/
 QToolBar 

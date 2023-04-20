@@ -28,6 +28,15 @@ QWidget
 
 }
 
+QMenu::item:checked
+{
+    color: #cae9ff;
+}
+
+QMenu::icon:checked {
+    background: #cae9ff;
+}
+
 
 /*-----QLabel-----*/
 QLabel

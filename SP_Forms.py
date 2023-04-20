@@ -164,7 +164,9 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         self.menuWindow.aboutToShow.connect(self.update_windows)
         self.actionTiled.triggered.connect(self.mdiArea.tileSubWindows)
+        self.actionTiled.triggered.connect(lambda: self.actionTiled.setChecked(True))
         self.actionCascaded.triggered.connect(self.mdiArea.cascadeSubWindows)
+        self.actionCascaded.triggered.connect(lambda: self.actionCascaded.setChecked(True))
 
         self.actionRow_above.triggered.connect(lambda: self._add_row(True))
         self.actionRow_below.triggered.connect(lambda: self._add_row(False))
@@ -214,6 +216,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     lambda: self.mdiArea.setActiveSubWindow(
                         self.sub_windows[self.sender().iconText()]
                     ))
+                new_action.triggered.connect(lambda: self.sender().setChecked(True))
 
     def _change_table(self):
         if self.current_table:

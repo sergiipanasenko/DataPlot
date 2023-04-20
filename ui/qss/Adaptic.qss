@@ -143,6 +143,14 @@ QMenu::item:disabled
     color: #898988;
 }
 
+QMenu::item:checked
+{
+    color: #9c0000;
+}
+
+QMenu::icon:checked {
+    background: #9c0000;
+}
 
 /*-----QToolTip-----*/
 QToolTip

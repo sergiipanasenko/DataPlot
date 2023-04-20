@@ -77,6 +77,7 @@ QMenuBar::item
 QMenuBar::item:selected
 {
     background-color: #607cff;
+    color: #ffffff;
     border: 1px solid #41cd52;
 
 }
@@ -85,6 +86,7 @@ QMenuBar::item:selected
 QMenuBar::item:pressed
 {
     background-color: #4969ff;
+    color: #fff;
     border: 1px solid #000;
     margin-bottom: -1px;
     padding-bottom: 1px;
@@ -124,15 +126,21 @@ QMenu::item:selected
 {
     background-color: #4969ff;
     color: #ffffff;
-
 }
-
 
 QMenu::item:disabled
 {
     color: #262626;
 }
 
+QMenu::item:checked
+{
+    color: #41cd52;
+}
+
+QMenu::icon:checked {
+    background: #41cd52;
+}
 
 /*-----QToolTip-----*/
 QToolTip
