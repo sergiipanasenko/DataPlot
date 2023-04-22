@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui, uic
+from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
 from my_qt_files import MyQtFile
 
@@ -274,6 +274,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self.actionRow.setEnabled(True)
             self.actionColumn.setEnabled(True)
         self.sub_window = QtWidgets.QMdiSubWindow()
+        self.sub_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.sub_window.setWidget(widget)
         self.sub_window_number += 1
         self.sub_window_amount += 1
