@@ -210,13 +210,13 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                 window_icon = window.windowIcon()
                 new_action = menu.addAction(window_icon, window_title)
                 new_action.setCheckable(True)
+                new_action.setChecked(False)
+                if window == self.mdiArea.activeSubWindow():
+                    new_action.setChecked(True)
                 self.data_windows.addAction(new_action)
                 self.sub_windows[new_action.iconText()] = window
-                new_action.triggered.connect(
-                    lambda: self.mdiArea.setActiveSubWindow(
-                        self.sub_windows[self.sender().iconText()]
-                    ))
-                new_action.triggered.connect(lambda: self.sender().setChecked(True))
+                new_action.triggered.connect(lambda: self.mdiArea.setActiveSubWindow(
+                    self.sub_windows[self.sender().iconText()]))
 
     def _change_table(self):
         if self.current_table:
