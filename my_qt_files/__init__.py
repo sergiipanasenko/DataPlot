@@ -1,1 +1,1 @@
-from .my_qt_file import MyQtFile, file_desc
+from .my_qt_file import MyQtDataFile, MyQtFileGroup, file_desc

@@ -1,4 +1,4 @@
-from .my_file import MyFile, IData, IText
+from .base_file import MyFile, IData, IText
 
 
 class MyTextFile(MyFile, IText):

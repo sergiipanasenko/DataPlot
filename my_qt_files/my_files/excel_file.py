@@ -1,7 +1,7 @@
 from openpyxl import load_workbook
 from xlrd import open_workbook as open_old_workbook
 from pyxlsb import open_workbook as open_binary_workbook
-from .my_file import MyFile, IData, IFileType
+from .base_file import MyFile, IData, IFileType
 
 
 class MyNewExcelFile(MyFile, IData):

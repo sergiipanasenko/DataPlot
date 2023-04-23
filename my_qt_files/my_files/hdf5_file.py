@@ -1,5 +1,5 @@
 import h5py as h5
-from .my_file import MyFile, IData
+from .base_file import MyFile, IData
 
 
 class MyHDF5File(MyFile, IData):

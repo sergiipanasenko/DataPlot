@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
-from my_qt_files import MyQtFile
+from my_qt_files import MyQtDataFile, MyQtFileGroup
 
 
 icons = {
@@ -181,10 +181,13 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def open(self):
         recent_directory = self.settings.value('recent_directory', type=str)
         self.statusbar.showMessage('Data loading from file...')
-        qt_file = MyQtFile(parent=self, recent_dir=recent_directory)
-        qt_file.read_data()
-        qt_file.finished.connect(self._post_open)
-        self.qt_files.append(qt_file)
+        qt_file_group = MyQtFileGroup(self)
+        qt_file_group.set_file_info(recent_directory)
+        for file_name in qt_file_group.get_file_names():
+            qt_file = MyQtDataFile(file_name)
+            qt_file.thread_read_data()
+            qt_file.finished.connect(self._post_open)
+            self.qt_files.append(qt_file)
 
     def _post_open(self):
         sender = self.sender()

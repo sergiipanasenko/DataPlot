@@ -1,5 +1,5 @@
 from . import MyTextDataFile, MyExcelFile, MyHDF5File
-from .my_file import MyFile, IData, IFileType
+from .base_file import MyFile, IData, IFileType
 
 
 data_file_matching = {
