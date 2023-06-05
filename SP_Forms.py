@@ -180,18 +180,19 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def open(self):
         recent_directory = self.settings.value('recent_directory', type=str)
-        self.statusbar.showMessage('Data loading from file...')
+        self.statusbar.showMessage('Input data loading from file...')
         qt_file_group = MyQtFileGroup(self)
         qt_file_group.set_file_info(recent_directory)
         for file_name in qt_file_group.get_file_names():
-            qt_file = MyQtDataFile(file_name)
+            qt_file = MyQtDataFile(file_name, qt_file_group.get_file_type())
             qt_file.thread_read_data()
             qt_file.finished.connect(self._post_open)
+            qt_file.needed_to_retry.connect(self.open)
             self.qt_files.append(qt_file)
 
     def _post_open(self):
         sender = self.sender()
-        title = f'Data {self.sub_window_number + 1}. {sender.get_file_name()}'
+        title = f'Input {self.sub_window_number + 1}. {sender.get_file_name()}'
         icon = icons[sender.get_file_type()]
         self.current_tabs = MyTabWidget()
         self.current_tabs.add_data(sender.get_data())
@@ -319,18 +320,17 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         new_table = MyTableWidget()
         # new_table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
-            self.statusbar.showMessage('Creating new data table...')
-            title = f'Data {self.sub_window_number + 1}'
+            self.statusbar.showMessage('Creating new input data table...')
+            title = f'Input {self.sub_window_number + 1}'
             icon = 'ui/New_Icons/add-file.png'
             new_table.setRowCount(1)
             new_table.setColumnCount(1)
             self._create_sub_window(title, icon, new_table)
         elif self.sender().objectName() == 'actionOutput':
-            self.statusbar.showMessage('Creating output table...')
-            title = 'Output table'
+            self.statusbar.showMessage('Creating new output data table...')
+            title = f'Output {self.sub_window_number + 1}'
             icon = 'ui/New_Icons/output.png'
             self._create_sub_window(title, icon, new_table)
-            self.actionOutput.setEnabled(False)
         self.current_table = new_table
 
     def sub_window_change(self):

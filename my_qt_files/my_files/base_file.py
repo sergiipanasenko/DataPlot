@@ -30,9 +30,8 @@ class MyFile:
     def is_exist(self, file_name=None):
         if file_name is None:
             file_name = self.get_file_name()
-        if file_name is not None:
-            if exists(file_name):
-                return True
+        if (file_name is not None) and exists(file_name):
+            return True
         return False
 
 

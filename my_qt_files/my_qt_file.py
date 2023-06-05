@@ -58,12 +58,21 @@ class MyQtFileGroup:
     def get_file_filter(self):
         return self.__file_filter
 
+    def get_file_type(self):
+        if self.__file_filter in file_desc[:2]:
+            return 'text'
+        if self.__file_filter in file_desc[2:6]:
+            return 'excel'
+        if self.__file_filter == file_desc[6]:
+            return 'hdf5'
+
     def read_data_files(self):
         pass
 
 
 class MyQtDataFile(MyDataFile, QObject):
     finished = pyqtSignal()
+    needed_to_retry = pyqtSignal()
 
     def __init__(self, file_name=None, data_file_type=None):
         super().__init__(file_name, data_file_type)
@@ -90,14 +99,14 @@ class MyQtDataFile(MyDataFile, QObject):
         msg.setText("Data File Open Error")
         msg.setInformativeText(
             f"Unable to open {self.get_file_name()}. "
-            f"This file is probably not data file")
+            f"This file is probably not {self.get_file_type()} file")
         msg.setDetailedText(err_message)
         msg.setWindowTitle("Error")
         msg.setStandardButtons(QMessageBox.Retry | QMessageBox.Ok)
         msg.exec_()
         try_open_again = False if msg.clickedButton().text() == 'OK' else True
         if try_open_again:
-            self.thread_read_data()
+            self.needed_to_retry.emit()
 
 
 
