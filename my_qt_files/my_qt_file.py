@@ -9,7 +9,8 @@ file_desc = (
     "Excel Binary Workbooks (*.xlsb)",
     "Excel templates (*.xltx *.xltm)",
     "Excel Workbooks 97-2003 (*.xls)",
-    "HDF5 files (*.h5 *.hdf *.hdf5)"
+    "HDF5 files (*.h5 *.hdf *.hdf5)",
+    "Matlab data files (*.mat)"
 )
 
 
@@ -59,12 +60,15 @@ class MyQtFileGroup:
         return self.__file_filter
 
     def get_file_type(self):
-        if self.__file_filter in file_desc[:2]:
+        if self.__file_filter in file_desc[1]:
             return 'text'
         if self.__file_filter in file_desc[2:6]:
             return 'excel'
         if self.__file_filter == file_desc[6]:
             return 'hdf5'
+        if self.__file_filter == file_desc[7]:
+            return 'matlab'
+        return None
 
     def read_data_files(self):
         pass

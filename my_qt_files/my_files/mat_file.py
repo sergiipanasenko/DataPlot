@@ -9,4 +9,5 @@ class MyMatFile(MyFile, IData):
     def read_data(self, file_name=None):
         file_name = self.check_file_name(file_name)
         mat_data = loadmat(file_name)
-
+        mat_data = {k: list(v) for k, v in mat_data.items() if k[0] != '_'}
+        self.set_data(mat_data)

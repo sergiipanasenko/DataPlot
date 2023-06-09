@@ -6,7 +6,8 @@ from my_qt_files import MyQtDataFile, MyQtFileGroup
 icons = {
     'text': 'ui/New_Icons/text-doc.png',
     'excel': 'ui/New_Icons/excel.png',
-    'hdf5': 'ui/New_Icons/hierarchy_diagram.png'
+    'hdf5': 'ui/New_Icons/hierarchy_diagram.png',
+    'matlab': 'ui/New_Icons/mat_file.png'
 }
 
 
@@ -20,7 +21,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
         # new fields
         self.sub_window = None
-        self.sub_window_number = 0
+        self.input_window_number = 0
+        self.output_window_number = 0
         self.sub_window_amount = 0
         self.table_number = 0
         self.current_tabs = None
@@ -192,11 +194,11 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def _post_open(self):
         sender = self.sender()
-        title = f'Input {self.sub_window_number + 1}. {sender.get_file_name()}'
+        title = f'Input {self.input_window_number + 1}. {sender.get_file_name()}'
         icon = icons[sender.get_file_type()]
         self.current_tabs = MyTabWidget()
         self.current_tabs.add_data(sender.get_data())
-        self._create_sub_window(title, icon, self.current_tabs)
+        self._create_sub_window(title, icon, self.current_tabs, False)
         self.current_table = self.current_tabs.currentWidget()
         self.statusbar.showMessage('')
         self.current_tabs.add_data_finished.connect(
@@ -267,7 +269,7 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
             self.select_cell()
 
-    def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
+    def _create_sub_window(self, sub_window_title, sub_window_icon, widget, is_output):
         if not self.menuAdd.isEnabled():
             self.menuAdd.setEnabled(True)
             self.actionRow_above.setEnabled(True)
@@ -280,7 +282,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window = QtWidgets.QMdiSubWindow()
         self.sub_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.sub_window.setWidget(widget)
-        self.sub_window_number += 1
+        if is_output:
+            self.output_window_number += 1
+        else:
+            self.input_window_number += 1
         self.sub_window_amount += 1
         self.table_number += 1
         self.sub_window.setWindowTitle(sub_window_title)
@@ -321,16 +326,16 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         # new_table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new input data table...')
-            title = f'Input {self.sub_window_number + 1}'
+            title = f'Input {self.input_window_number + 1}'
             icon = 'ui/New_Icons/add-file.png'
             new_table.setRowCount(1)
             new_table.setColumnCount(1)
-            self._create_sub_window(title, icon, new_table)
+            self._create_sub_window(title, icon, new_table, False)
         elif self.sender().objectName() == 'actionOutput':
             self.statusbar.showMessage('Creating new output data table...')
-            title = f'Output {self.sub_window_number + 1}'
+            title = f'Output {self.output_window_number + 1}'
             icon = 'ui/New_Icons/output.png'
-            self._create_sub_window(title, icon, new_table)
+            self._create_sub_window(title, icon, new_table, True)
         self.current_table = new_table
 
     def sub_window_change(self):

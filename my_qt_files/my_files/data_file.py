@@ -1,11 +1,12 @@
-from . import MyTextDataFile, MyExcelFile, MyHDF5File
+from . import MyTextDataFile, MyExcelFile, MyHDF5File, MyMatFile
 from .base_file import MyFile, IData, IFileType
 
 
 data_file_matching = {
     'text': (MyTextDataFile, ('txt', 'dat')),
     'excel': (MyExcelFile, ('xlsx', 'xlsm', 'xltx', 'xltm', 'xlsb', 'xls')),
-    'hdf5': (MyHDF5File, ('h5', 'hdf', 'hdf5'))
+    'hdf5': (MyHDF5File, ('h5', 'hdf', 'hdf5')),
+    'matlab': (MyMatFile, ('mat',))
 }
 
 
@@ -25,6 +26,8 @@ class MyDataFile(MyFile, IData, IFileType):
                 data_file_type = 'excel'
             elif file_ext in self.get_type_dict()['hdf5'][1]:
                 data_file_type = 'hdf5'
+            elif file_ext in self.get_type_dict()['matlab'][1]:
+                data_file_type = 'matlab'
             else:
                 data_file_type = 'text'
         else:
