@@ -119,6 +119,14 @@ QMenu::indicator
 
 }
 
+QMenu::item:checked
+{
+    color: #4040FF;
+}
+
+QMenu::icon:checked {
+    background: #4040FF;
+}
 
 /*-----QToolBar-----*/
 QToolBar 
@@ -142,7 +150,7 @@ QToolBar::separator
 {
     width: 1px;
     margin: 0px 4px;
-    background-color: rgba(0,0,0);
+    background-color: rgb(0,0,0);
 
 }
 
@@ -420,7 +428,7 @@ QDockWidget::separator
 {
 	width: 1px;
 	margin: 6px 4px;
-	background-color: rgba(0,0,0);
+	background-color: rgb(0,0,0);
 
 }
 

@@ -122,6 +122,14 @@ QMenu::item:selected
 
 }
 
+QMenu::item:checked
+{
+    color: #6384ff;
+}
+
+QMenu::icon:checked {
+    background: #6384ff;
+}
 
 /*-----QPushButton-----*/
 QPushButton
