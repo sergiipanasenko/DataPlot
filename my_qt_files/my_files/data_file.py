@@ -33,6 +33,6 @@ class MyDataFile(MyFile, IData, IFileType):
         else:
             self.check_file_type(data_file_type)
         data_file = self.get_type_dict()[data_file_type][0](file_name)
+        self.set_file_type(data_file_type)
         data_file.read_data()
         self.set_data(data_file.get_data())
-        self.set_file_type(data_file_type)
