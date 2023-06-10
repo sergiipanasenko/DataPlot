@@ -1,6 +1,7 @@
 /.idea/
 /venv/
 *.txt
+!requirements.txt
 *.dat
 /Icons/*.zip
 /__pycache__/
