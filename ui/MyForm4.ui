@@ -328,7 +328,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -373,7 +373,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -389,7 +389,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -456,7 +456,7 @@
               </attribute>
               <layout class="QGridLayout" name="gridLayout_9">
                <item row="0" column="2">
-                <widget class="QLabel" name="label_Ncolto">
+                <widget class="QLabel" name="label_Scolto">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -474,7 +474,7 @@
                 </widget>
                </item>
                <item row="0" column="3">
-                <widget class="QComboBox" name="combo_Ncolto">
+                <widget class="QComboBox" name="combo_Scolto">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -503,7 +503,7 @@
                 </widget>
                </item>
                <item row="0" column="0">
-                <widget class="QLabel" name="label_Ncols">
+                <widget class="QLabel" name="label_Scols">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -519,7 +519,7 @@
                 </widget>
                </item>
                <item row="1" column="3">
-                <widget class="QComboBox" name="combo_Nrowto">
+                <widget class="QComboBox" name="combo_Srowto">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -532,13 +532,13 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QComboBox" name="combo_Nrowfrom">
+                <widget class="QComboBox" name="combo_Srowfrom">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -551,13 +551,13 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QComboBox" name="combo_Ncolfrom">
+                <widget class="QComboBox" name="combo_Scolfrom">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -570,13 +570,13 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
                </item>
                <item row="1" column="2">
-                <widget class="QLabel" name="label_Nrowto">
+                <widget class="QLabel" name="label_Srowto">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -598,7 +598,7 @@
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_Nrows">
+                <widget class="QLabel" name="label_Srows">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
@@ -694,7 +694,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -710,7 +710,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -726,7 +726,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -742,7 +742,7 @@
                  <property name="font">
                   <font>
                    <family>Times New Roman</family>
-                   <pointsize>12</pointsize>
+                   <pointsize>14</pointsize>
                   </font>
                  </property>
                 </widget>

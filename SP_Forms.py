@@ -91,21 +91,33 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.combo_Ycolto = self.findChild(QtWidgets.QComboBox, "combo_Ycolto")
         self.combo_Yrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Yrowfrom")
         self.combo_Yrowto = self.findChild(QtWidgets.QComboBox, "combo_Yrowto")
-        self.combo_Ncolfrom = self.findChild(QtWidgets.QComboBox, "combo_Ncolfrom")
-        self.combo_Ncolto = self.findChild(QtWidgets.QComboBox, "combo_Ncolto")
-        self.combo_Nrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Nrowfrom")
-        self.combo_Nrowto = self.findChild(QtWidgets.QComboBox, "combo_Nrowto")
+        self.combo_Scolfrom = self.findChild(QtWidgets.QComboBox, "combo_Scolfrom")
+        self.combo_Scolto = self.findChild(QtWidgets.QComboBox, "combo_Scolto")
+        self.combo_Srowfrom = self.findChild(QtWidgets.QComboBox, "combo_Srowfrom")
+        self.combo_Srowto = self.findChild(QtWidgets.QComboBox, "combo_Srowto")
         self.combo_Datacolfrom = self.findChild(QtWidgets.QComboBox, "combo_Datacolfrom")
         self.combo_Datacolto = self.findChild(QtWidgets.QComboBox, "combo_Datacolto")
         self.combo_Datarowfrom = self.findChild(QtWidgets.QComboBox, "combo_Datarowfrom")
         self.combo_Datarowto = self.findChild(QtWidgets.QComboBox, "combo_Datarowto")
         self.combo_wise = self.findChild(QtWidgets.QComboBox, "combo_wise")
+        self.combo_from_group = (self.combo_Xcolfrom, self.combo_Xrowfrom,
+                                 self.combo_Ycolfrom, self.combo_Yrowfrom,
+                                 self.combo_Scolfrom, self.combo_Srowfrom,
+                                 self.combo_Datacolfrom, self.combo_Datarowfrom)
+        self.combo_rowto_group = (self.combo_Xrowto, self.combo_Yrowto,
+                                 self.combo_Srowto, self.combo_Datarowto)
+        self.combo_colto_group = (self.combo_Xcolto, self.combo_Ycolto,
+                                  self.combo_Scolto, self.combo_Datacolto)
 
         # Labels
         self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
         self.label_totalcolumnvalue = self.findChild(QtWidgets.QLabel, "label_totalcolumnvalue")
         self.label_currentrowvalue = self.findChild(QtWidgets.QLabel, "label_currentrowvalue")
         self.label_currentcolumnvalue = self.findChild(QtWidgets.QLabel, "label_currentcolumnvalue")
+        self.label_value_group = (self.label_totalrowvalue,
+                                  self.label_totalcolumnvalue,
+                                  self.label_currentrowvalue,
+                                  self.label_currentcolumnvalue)
 
         # MDI area
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
@@ -198,11 +210,20 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         icon = icons[sender.get_file_type()]
         self.current_tabs = MyTabWidget()
         self.current_tabs.add_data(sender.get_data())
+        self._connect_signals(self.current_tabs)
         self._create_sub_window(title, icon, self.current_tabs, False)
-        self.current_table = self.current_tabs.currentWidget()
         self.statusbar.showMessage('')
         self.current_tabs.add_data_finished.connect(
             lambda: self.qt_files.remove(sender))
+
+    def _connect_signals(self, tab_widget):
+        tab_widget.currentChanged.connect(self.tab_change)
+        for index in range(tab_widget.count()):
+            current_widget = tab_widget.widget(index)
+            if isinstance(current_widget, MyTabWidget):
+                self._connect_signals(current_widget)
+            if isinstance(current_widget, MyTableWidget):
+                current_widget.cellClicked.connect(self.select_cell)
 
     def update_windows(self):
         menu = self.menuWindow
@@ -225,49 +246,31 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                     self.sub_windows[self.sender().iconText()]))
 
     def _change_table(self):
+        for combo_from in self.combo_from_group:
+            combo_from.clear()
+        for combo_row_to in self.combo_rowto_group:
+            combo_row_to.clear()
+        for combo_col_to in self.combo_colto_group:
+            combo_col_to.clear()
+        for label_value in self.label_value_group:
+            label_value.setText(str(0))
         if self.current_table:
-            self.combo_Xrowfrom.clear()
-            self.combo_Xrowto.clear()
-            self.combo_Xcolfrom.clear()
-            self.combo_Xcolto.clear()
-            self.combo_Yrowfrom.clear()
-            self.combo_Yrowto.clear()
-            self.combo_Ycolfrom.clear()
-            self.combo_Ycolto.clear()
-            self.combo_Datarowfrom.clear()
-            self.combo_Datarowto.clear()
-            self.combo_Datacolfrom.clear()
-            self.combo_Datacolto.clear()
-            if self.current_table.columnCount() and self.current_table.rowCount():
-                row_number_list = list(map(str, range(1, self.current_table.rowCount() + 1)))
-                col_number_list = list(map(str, range(1, self.current_table.columnCount() + 1)))
-                self.combo_Xrowfrom.addItems(row_number_list)
-                self.combo_Xrowfrom.setCurrentIndex(0)
-                self.combo_Xrowto.addItems(row_number_list)
-                self.combo_Xrowto.setCurrentIndex(len(row_number_list) - 1)
-                self.combo_Xcolfrom.addItems(col_number_list)
-                self.combo_Xcolfrom.setCurrentIndex(0)
-                self.combo_Xcolto.addItems(col_number_list)
-                self.combo_Xcolto.setCurrentIndex(len(col_number_list) - 1)
-                self.combo_Yrowfrom.addItems(row_number_list)
-                self.combo_Yrowfrom.setCurrentIndex(0)
-                self.combo_Yrowto.addItems(row_number_list)
-                self.combo_Yrowto.setCurrentIndex(len(row_number_list) - 1)
-                self.combo_Ycolfrom.addItems(col_number_list)
-                self.combo_Ycolfrom.setCurrentIndex(0)
-                self.combo_Ycolto.addItems(col_number_list)
-                self.combo_Ycolto.setCurrentIndex(len(col_number_list) - 1)
-                self.combo_Datarowfrom.addItems(row_number_list)
-                self.combo_Datarowfrom.setCurrentIndex(0)
-                self.combo_Datarowto.addItems(row_number_list)
-                self.combo_Datarowto.setCurrentIndex(len(row_number_list) - 1)
-                self.combo_Datacolfrom.addItems(col_number_list)
-                self.combo_Datacolfrom.setCurrentIndex(0)
-                self.combo_Datacolto.addItems(col_number_list)
-                self.combo_Datacolto.setCurrentIndex(len(col_number_list) - 1)
-            self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
-            self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
-            self.select_cell()
+            col_number = self.current_table.columnCount()
+            row_number = self.current_table.rowCount()
+            if col_number and row_number:
+                row_number_list = list(map(str, range(1, row_number + 1)))
+                col_number_list = list(map(str, range(1, col_number + 1)))
+                for combo_from in self.combo_from_group:
+                    combo_from.addItems(row_number_list)
+                    combo_from.setCurrentIndex(0)
+                for combo_row_to in self.combo_rowto_group:
+                    combo_row_to.addItems(row_number_list)
+                    combo_row_to.setCurrentIndex(len(row_number_list) - 1)
+                for combo_col_to in self.combo_colto_group:
+                    combo_col_to.addItems(col_number_list)
+                    combo_col_to.setCurrentIndex(len(col_number_list) - 1)
+                self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
+                self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
 
     def _create_sub_window(self, sub_window_title, sub_window_icon, widget, is_output):
         if not self.menuAdd.isEnabled():
@@ -323,7 +326,6 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def add_new_sub_window(self):
         new_table = MyTableWidget()
-        # new_table.itemSelectionChanged.connect(self.select_cell)
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new input data table...')
             title = f'Input {self.input_window_number + 1}'
@@ -341,26 +343,24 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
-            tabs = self.sub_window.findChild(QtWidgets.QTabWidget, 'tabs')
-            if tabs:
-                self.current_tabs = tabs
-                self.current_tabs.setCurrentIndex(0)
-                self.current_table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table1')
-            else:
-                self.current_table = self.sub_window.widget().findChild(QtWidgets.QTableWidget, 'table')
-            self._change_table()
+            self.current_tabs = self.sub_window.widget()
+            self.current_tabs.currentChanged.emit(self.current_tabs.currentIndex())
 
     def tab_change(self, index):
         if index >= 0:
-            tab_widget = self.current_tabs
-            while isinstance(tab_widget.currentWidget(), MyTabWidget):
+            tab_widget = self.sender()
+            current_index = index
+            while isinstance(tab_widget.widget(current_index), MyTabWidget):
                 tab_widget = tab_widget.currentWidget()
+                current_index = tab_widget.currentIndex()
+            self.current_table = tab_widget.widget(current_index)
             self._change_table()
-            self.current_table = tab_widget.currentWidget()
+            self.select_cell()
 
     def select_cell(self):
-        self.label_currentrowvalue.setText(str(self.current_table.currentRow() + 1))
-        self.label_currentcolumnvalue.setText(str(self.current_table.currentColumn() + 1))
+        table = self.current_table
+        self.label_currentrowvalue.setText(str(table.currentRow() + 1))
+        self.label_currentcolumnvalue.setText(str(table.currentColumn() + 1))
 
     def closeEvent(self, e):
         self.settings.setValue('Geometry', self.saveGeometry())
