@@ -135,9 +135,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         current_action = self.settings.value('theme_action_checked', type=str)
         self.findChild(QtWidgets.QAction, current_action).setChecked(True)
         self.statusbar.showMessage('Ready')
-        self.XChooseColor = QtGui.QColor('green')
-        self.YChooseColor = QtGui.QColor('blue')
-        self.DataChooseColor = QtGui.QColor('yellow')
+        self.XChooseColor = QtGui.QColor(112, 194, 126)
+        self.YChooseColor = QtGui.QColor(112, 168, 194)
+        self.SChooseColor = QtGui.QColor(194, 131, 112)
+        self.DataChooseColor = QtGui.QColor(194, 194, 112)
 
         # action group 1
         self.themes = QtWidgets.QActionGroup(self)
@@ -337,6 +338,9 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             self.statusbar.showMessage('Creating new output data table...')
             title = f'Output {self.output_window_number + 1}'
             icon = 'ui/New_Icons/output.png'
+            new_table.setRowCount(2)
+            new_table.setColumnCount(3)
+            self._paint_output_table(new_table)
             self._create_sub_window(title, icon, new_table, True)
         self.current_table = new_table
 
@@ -344,7 +348,8 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
             self.current_tabs = self.sub_window.widget()
-            self.current_tabs.currentChanged.emit(self.current_tabs.currentIndex())
+            if isinstance(self.current_tabs, MyTabWidget):
+                self.current_tabs.currentChanged.emit(self.current_tabs.currentIndex())
 
     def tab_change(self, index):
         if index >= 0:
@@ -366,3 +371,18 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.settings.setValue('Geometry', self.saveGeometry())
         self.settings.setValue('WindowState', self.saveState())
         super().closeEvent(e)
+
+    def _paint_output_table(self, table: MyTableWidget):
+        for ind_row in range(table.rowCount()):
+            for ind_col in range(table.columnCount()):
+                if table.item(ind_row, ind_col) is None:
+                    table.setItem(ind_row, ind_col, QtWidgets.QTableWidgetItem())
+                if ind_row > 0 and ind_col == 0:
+                    table.item(ind_row, ind_col).setBackground(self.XChooseColor)
+                if ind_row > 0 and ind_col == 1:
+                    table.item(ind_row, ind_col).setBackground(self.SChooseColor)
+                if ind_row == 0 and ind_col > 1:
+                    table.item(ind_row, ind_col).setBackground(self.YChooseColor)
+                if ind_row > 0 and ind_col > 1:
+                    table.item(ind_row, ind_col).setBackground(self.DataChooseColor)
+

@@ -505,7 +505,7 @@ QGroupBox::title
 }
 
 /*-----QTableView-----*/
-QTableView::item
+QTableView
 {
     background-color: #131313;
     color: #c9a66b;

@@ -422,8 +422,7 @@ QTabBar::tab:selected
 /*-----QTableView-----*/
 QTableView::item
 {
-    background-color: #fff;
-    color: #8f1e28;
+    color: #fff;
 }
 
 QTableView::item:selected
