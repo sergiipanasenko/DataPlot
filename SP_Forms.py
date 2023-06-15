@@ -141,7 +141,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.statusbar.showMessage('Ready')
         self.XChooseColor = QtGui.QColor(112, 194, 126)
         self.YChooseColor = QtGui.QColor(112, 168, 194)
-        self.SChooseColor = QtGui.QColor(194, 131, 112)
+        self.SChooseColor = QtGui.QColor(194, 112, 141)
         self.DataChooseColor = QtGui.QColor(194, 194, 112)
 
         # action group 1
@@ -231,10 +231,11 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             current_widget.cellClicked.connect(self.select_cell)
 
     def update_windows(self):
-        menu = self.menuWindow
+        menu: QtWidgets.QMenu = self.menuWindow
         menu.clear()
         menu.addActions((self.actionTiled, self.actionCascaded))
         window_list = self.mdiArea.subWindowList()
+        new_action: QtWidgets.QAction
         if window_list:
             menu.addSeparator()
             for window in window_list:
@@ -251,14 +252,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
                     self.sub_windows[self.sender().iconText()]))
 
     def _change_table(self):
-        for combo_from in self.combo_from_group:
-            combo_from.clear()
-        for combo_row_to in self.combo_rowto_group:
-            combo_row_to.clear()
-        for combo_col_to in self.combo_colto_group:
-            combo_col_to.clear()
-        for label_value in self.label_value_group:
-            label_value.setText(str(0))
+        self._combo_label_reset()
         if self.current_table:
             col_number = self.current_table.columnCount()
             row_number = self.current_table.rowCount()
@@ -301,6 +295,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         else:
             self.current_table.insertRow(self.current_table.currentRow() + 1)
         self._change_table()
+        self._paint_output_table()
 
     def _add_column(self, flag):
         if flag:
@@ -308,13 +303,16 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         else:
             self.current_table.insertColumn(self.current_table.currentColumn() + 1)
         self._change_table()
+        self._paint_output_table()
 
     def _remove_row(self):
         self.current_table.removeRow(self.current_table.currentRow())
+        self._paint_output_table()
         self._change_table()
 
     def _remove_column(self):
         self.current_table.removeColumn(self.current_table.currentColumn())
+        self._paint_output_table()
         self._change_table()
 
     def _select_data(self, limits: dict, color: QtGui.QColor):
@@ -339,9 +337,10 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             icon = 'ui/New_Icons/output.png'
             new_table.setRowCount(2)
             new_table.setColumnCount(3)
-            self._paint_output_table(new_table)
         self._create_sub_window(title, icon, new_table)
+        self._paint_output_table()
         self.current_table = new_table
+        self._paint_output_table()
         self._change_table()
         self._connect_signals(self.current_table)
 
@@ -356,6 +355,17 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
                 self.current_tabs = None
                 self.current_table = sub_window_widget
             self._change_table()
+        else:
+            for item in self.action_table:
+                item.setEnabled(False)
+            self._combo_label_reset()
+
+    def _combo_label_reset(self):
+        for combo in (self.combo_from_group + self.combo_colto_group +
+                      self.combo_rowto_group):
+            combo.clear()
+        for label_value in self.label_value_group:
+            label_value.setText(str(0))
 
     def tab_change(self, index):
         if index >= 0:
@@ -378,17 +388,22 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.settings.setValue('WindowState', self.saveState())
         super().closeEvent(e)
 
-    def _paint_output_table(self, table: MyTableWidget):
-        for ind_row in range(table.rowCount()):
-            for ind_col in range(table.columnCount()):
-                if table.item(ind_row, ind_col) is None:
-                    table.setItem(ind_row, ind_col, QtWidgets.QTableWidgetItem())
-                if ind_row > 0 and ind_col == 0:
-                    table.item(ind_row, ind_col).setBackground(self.XChooseColor)
-                if ind_row > 0 and ind_col == 1:
-                    table.item(ind_row, ind_col).setBackground(self.SChooseColor)
-                if ind_row == 0 and ind_col > 1:
-                    table.item(ind_row, ind_col).setBackground(self.YChooseColor)
-                if ind_row > 0 and ind_col > 1:
-                    table.item(ind_row, ind_col).setBackground(self.DataChooseColor)
+    def _paint_output_table(self):
+        sub_window = self.mdiArea.activeSubWindow()
+        if sub_window:
+            sub_window_title = sub_window.windowTitle()
+            if 'Output' in sub_window_title:
+                table = self.current_table
+                for ind_row in range(table.rowCount()):
+                    for ind_col in range(table.columnCount()):
+                        if table.item(ind_row, ind_col) is None:
+                            table.setItem(ind_row, ind_col, QtWidgets.QTableWidgetItem())
+                        if ind_row > 0 and ind_col == 0:
+                            table.item(ind_row, ind_col).setBackground(self.XChooseColor)
+                        if ind_row > 0 and ind_col == 1:
+                            table.item(ind_row, ind_col).setBackground(self.SChooseColor)
+                        if ind_row == 0 and ind_col > 1:
+                            table.item(ind_row, ind_col).setBackground(self.YChooseColor)
+                        if ind_row > 0 and ind_col > 1:
+                            table.item(ind_row, ind_col).setBackground(self.DataChooseColor)
 
