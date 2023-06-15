@@ -508,7 +508,7 @@ QGroupBox::title
 QTableView
 {
     background-color: #131313;
-    color: #c9a66b;
+    color: #fff;
 }
 
 QTableView::item:selected

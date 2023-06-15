@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
-from SP_Forms import MyForm3
+from SP_Forms import MyDataPlotForm
 
 
-class ProgramWindow(MyForm3):
+class ProgramWindow(MyDataPlotForm):
 
     def TableRepaint(self):
         background_color = QtGui.QColor('white')
@@ -201,6 +201,6 @@ class ProgramWindow(MyForm3):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyForm3()
+    MainWindow = MyDataPlotForm()
     MainWindow.show()
     sys.exit(app.exec_())

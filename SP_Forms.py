@@ -11,7 +11,7 @@ icons = {
 }
 
 
-class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
+class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
     def __init__(self):
         # parent initialisation
         super().__init__()
@@ -74,6 +74,10 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionColumn_right = self.findChild(QtWidgets.QAction, "actionColumn_right")
         self.actionRow = self.findChild(QtWidgets.QAction, "actionRow")
         self.actionColumn = self.findChild(QtWidgets.QAction, "actionColumn")
+        self.action_table = (self.menuAdd, self.menuRemove,
+                             self.actionRow_above, self.actionRow_below,
+                             self.actionColumn_left, self.actionColumn_right,
+                             self.actionRow, self.actionColumn)
 
         # Buttons
         self.push_add = self.findChild(QtWidgets.QPushButton, "push_add")
@@ -212,19 +216,19 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
         self.current_tabs = MyTabWidget()
         self.current_tabs.add_data(sender.get_data())
         self._connect_signals(self.current_tabs)
-        self._create_sub_window(title, icon, self.current_tabs, False)
+        self._create_sub_window(title, icon, self.current_tabs)
         self.statusbar.showMessage('')
         self.current_tabs.add_data_finished.connect(
             lambda: self.qt_files.remove(sender))
 
-    def _connect_signals(self, tab_widget):
-        tab_widget.currentChanged.connect(self.tab_change)
-        for index in range(tab_widget.count()):
-            current_widget = tab_widget.widget(index)
-            if isinstance(current_widget, MyTabWidget):
-                self._connect_signals(current_widget)
-            if isinstance(current_widget, MyTableWidget):
-                current_widget.cellClicked.connect(self.select_cell)
+    def _connect_signals(self, current_widget):
+        if isinstance(current_widget, MyTabWidget):
+            current_widget.currentChanged.connect(self.tab_change)
+            for index in range(current_widget.count()):
+                child_widget = current_widget.widget(index)
+                self._connect_signals(child_widget)
+        if isinstance(current_widget, MyTableWidget):
+            current_widget.cellClicked.connect(self.select_cell)
 
     def update_windows(self):
         menu = self.menuWindow
@@ -273,22 +277,16 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
                 self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
                 self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
 
-    def _create_sub_window(self, sub_window_title, sub_window_icon, widget, is_output):
+    def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
         if not self.menuAdd.isEnabled():
-            self.menuAdd.setEnabled(True)
-            self.actionRow_above.setEnabled(True)
-            self.actionRow_below.setEnabled(True)
-            self.actionColumn_left.setEnabled(True)
-            self.actionColumn_right.setEnabled(True)
-            self.menuRemove.setEnabled(True)
-            self.actionRow.setEnabled(True)
-            self.actionColumn.setEnabled(True)
+            for item in self.action_table:
+                item.setEnabled(True)
         self.sub_window = QtWidgets.QMdiSubWindow()
         self.sub_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.sub_window.setWidget(widget)
-        if is_output:
+        if self.sender().objectName() == 'actionOutput':
             self.output_window_number += 1
-        else:
+        if self.sender().objectName() == 'actionNew':
             self.input_window_number += 1
         self.sub_window_amount += 1
         self.table_number += 1
@@ -327,13 +325,14 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
 
     def add_new_sub_window(self):
         new_table = MyTableWidget()
+        title = None
+        icon = None
         if self.sender().objectName() == 'actionNew':
             self.statusbar.showMessage('Creating new input data table...')
             title = f'Input {self.input_window_number + 1}'
             icon = 'ui/New_Icons/add-file.png'
             new_table.setRowCount(1)
             new_table.setColumnCount(1)
-            self._create_sub_window(title, icon, new_table, False)
         elif self.sender().objectName() == 'actionOutput':
             self.statusbar.showMessage('Creating new output data table...')
             title = f'Output {self.output_window_number + 1}'
@@ -341,15 +340,22 @@ class MyForm3(QtWidgets.QMainWindow, MyAbstractForm):
             new_table.setRowCount(2)
             new_table.setColumnCount(3)
             self._paint_output_table(new_table)
-            self._create_sub_window(title, icon, new_table, True)
+        self._create_sub_window(title, icon, new_table)
         self.current_table = new_table
+        self._change_table()
+        self._connect_signals(self.current_table)
 
     def sub_window_change(self):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
-            self.current_tabs = self.sub_window.widget()
-            if isinstance(self.current_tabs, MyTabWidget):
+            sub_window_widget = self.sub_window.widget()
+            if isinstance(sub_window_widget, MyTabWidget):
+                self.current_tabs = self.sub_window.widget()
                 self.current_tabs.currentChanged.emit(self.current_tabs.currentIndex())
+            if isinstance(sub_window_widget, MyTableWidget):
+                self.current_tabs = None
+                self.current_table = sub_window_widget
+            self._change_table()
 
     def tab_change(self, index):
         if index >= 0:
