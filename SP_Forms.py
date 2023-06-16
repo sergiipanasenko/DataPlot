@@ -33,6 +33,11 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.qt_files = list()
         self.sub_windows = dict()
 
+        self.XChooseColor = QtGui.QColor(112, 194, 126)
+        self.YChooseColor = QtGui.QColor(112, 168, 194)
+        self.SChooseColor = QtGui.QColor(194, 112, 141)
+        self.DataChooseColor = QtGui.QColor(194, 194, 112)
+
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
 
@@ -87,6 +92,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.push_cancel = self.findChild(QtWidgets.QPushButton, "push_cancel")
 
         # Combos
+        self.combo_wise = self.findChild(QtWidgets.QComboBox, "combo_wise")
         self.combo_Xcolfrom = self.findChild(QtWidgets.QComboBox, "combo_Xcolfrom")
         self.combo_Xcolto = self.findChild(QtWidgets.QComboBox, "combo_Xcolto")
         self.combo_Xrowfrom = self.findChild(QtWidgets.QComboBox, "combo_Xrowfrom")
@@ -104,14 +110,23 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.combo_Datarowfrom = self.findChild(QtWidgets.QComboBox, "combo_Datarowfrom")
         self.combo_Datarowto = self.findChild(QtWidgets.QComboBox, "combo_Datarowto")
         self.combo_wise = self.findChild(QtWidgets.QComboBox, "combo_wise")
-        self.combo_from_group = (self.combo_Xcolfrom, self.combo_Xrowfrom,
-                                 self.combo_Ycolfrom, self.combo_Yrowfrom,
-                                 self.combo_Scolfrom, self.combo_Srowfrom,
-                                 self.combo_Datacolfrom, self.combo_Datarowfrom)
+        self.combo_rowfrom_group = (self.combo_Xrowfrom, self.combo_Yrowfrom,
+                                    self.combo_Srowfrom, self.combo_Datarowfrom)
+        self.combo_colfrom_group = (self.combo_Xcolfrom, self.combo_Ycolfrom,
+                                    self.combo_Scolfrom, self.combo_Datacolfrom)
         self.combo_rowto_group = (self.combo_Xrowto, self.combo_Yrowto,
                                  self.combo_Srowto, self.combo_Datarowto)
         self.combo_colto_group = (self.combo_Xcolto, self.combo_Ycolto,
                                   self.combo_Scolto, self.combo_Datacolto)
+        self.combo_select = {
+            '0': ((self.combo_Xrowfrom, self.combo_Xcolfrom,
+                  self.combo_Xrowto, self.combo_Xcolto), self.XChooseColor),
+            '1': ((self.combo_Yrowfrom, self.combo_Ycolfrom,
+                  self.combo_Yrowto, self.combo_Ycolto), self.YChooseColor),
+            '2': ((self.combo_Srowfrom, self.combo_Scolfrom,
+                  self.combo_Srowto, self.combo_Scolto), self.SChooseColor),
+            '3': ((self.combo_Srowfrom, self.combo_Scolfrom,
+                  self.combo_Srowto, self.combo_Scolto), self.DataChooseColor)}
 
         # Labels
         self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
@@ -122,6 +137,9 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
                                   self.label_totalcolumnvalue,
                                   self.label_currentrowvalue,
                                   self.label_currentcolumnvalue)
+        # Tab widgets
+        self.tab_select = self.findChild(QtWidgets.QTabWidget, "tab_select")
+        self.tab_minmax = self.findChild(QtWidgets.QTabWidget, "tab_minmax")
 
         # MDI area
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, "mdiArea")
@@ -139,10 +157,6 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         current_action = self.settings.value('theme_action_checked', type=str)
         self.findChild(QtWidgets.QAction, current_action).setChecked(True)
         self.statusbar.showMessage('Ready')
-        self.XChooseColor = QtGui.QColor(112, 194, 126)
-        self.YChooseColor = QtGui.QColor(112, 168, 194)
-        self.SChooseColor = QtGui.QColor(194, 112, 141)
-        self.DataChooseColor = QtGui.QColor(194, 194, 112)
 
         # action group 1
         self.themes = QtWidgets.QActionGroup(self)
@@ -193,9 +207,11 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionColumn_right.triggered.connect(lambda: self._add_column(False))
         self.actionRow.triggered.connect(self._remove_row)
         self.actionColumn.triggered.connect(self._remove_column)
+
+        self.push_add.clicked.connect(self.add_values)
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
 
-        self.mdiArea.subWindowActivated.connect(self.sub_window_change)
+        self.mdiArea.subWindowActivated.connect(self.change_sub_window)
 
     def open(self):
         recent_directory = self.settings.value('recent_directory', type=str)
@@ -259,9 +275,12 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             if col_number and row_number:
                 row_number_list = list(map(str, range(1, row_number + 1)))
                 col_number_list = list(map(str, range(1, col_number + 1)))
-                for combo_from in self.combo_from_group:
-                    combo_from.addItems(row_number_list)
-                    combo_from.setCurrentIndex(0)
+                for combo_row_from in self.combo_rowfrom_group:
+                    combo_row_from.addItems(row_number_list)
+                    combo_row_from.setCurrentIndex(0)
+                for combo_col_from in self.combo_colfrom_group:
+                    combo_col_from.addItems(col_number_list)
+                    combo_col_from.setCurrentIndex(0)
                 for combo_row_to in self.combo_rowto_group:
                     combo_row_to.addItems(row_number_list)
                     combo_row_to.setCurrentIndex(len(row_number_list) - 1)
@@ -315,11 +334,23 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self._paint_output_table()
         self._change_table()
 
-    def _select_data(self, limits: dict, color: QtGui.QColor):
-        pass
+    def add_values(self):
+        index = self.tab_select.currentIndex()
+        if self.current_table:
+            values = self.current_table.values[index]
+            combos = self.combo_select[str(index)]
+            start_row = int(combos[0][0].currentText()) - 1
+            start_col = int(combos[0][1].currentText()) - 1
+            end_row = int(combos[0][2].currentText())
+            end_col = int(combos[0][3].currentText())
+            for i in range(start_row, end_row):
+                for j in range(start_col, end_col):
+                    values[str((i, j))] = self.current_table.item(i,j).text()
+                    self.current_table.item(i, j).setBackground(combos[1])
 
-    def _add_data(self, target: dict, data: dict):
-        pass
+
+
+
 
     def add_new_sub_window(self):
         new_table = MyTableWidget()
@@ -344,7 +375,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self._change_table()
         self._connect_signals(self.current_table)
 
-    def sub_window_change(self):
+    def change_sub_window(self):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
             sub_window_widget = self.sub_window.widget()
@@ -361,8 +392,8 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             self._combo_label_reset()
 
     def _combo_label_reset(self):
-        for combo in (self.combo_from_group + self.combo_colto_group +
-                      self.combo_rowto_group):
+        for combo in (self.combo_rowfrom_group + self.combo_colfrom_group +
+                      self.combo_colto_group + self.combo_rowto_group):
             combo.clear()
         for label_value in self.label_value_group:
             label_value.setText(str(0))
