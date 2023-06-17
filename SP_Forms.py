@@ -125,8 +125,8 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
                   self.combo_Yrowto, self.combo_Ycolto), self.YChooseColor),
             '2': ((self.combo_Srowfrom, self.combo_Scolfrom,
                   self.combo_Srowto, self.combo_Scolto), self.SChooseColor),
-            '3': ((self.combo_Srowfrom, self.combo_Scolfrom,
-                  self.combo_Srowto, self.combo_Scolto), self.DataChooseColor)}
+            '3': ((self.combo_Datarowfrom, self.combo_Datacolfrom,
+                  self.combo_Datarowto, self.combo_Datacolto), self.DataChooseColor)}
 
         # Labels
         self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
