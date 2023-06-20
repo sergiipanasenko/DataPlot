@@ -37,10 +37,10 @@ class MyTableWidget(QTableWidget):
         # self initialisation
         self.thread = None
         self.worker = None
-        self.x_values = dict()
-        self.y_values = dict()
-        self.s_values = dict()
-        self.data_values = dict()
+        self.x_values = []
+        self.y_values = []
+        self.s_values = []
+        self.data_values = []
         self.values = (self.x_values, self.y_values,
                        self.s_values, self.data_values)
 

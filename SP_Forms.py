@@ -337,7 +337,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
     def add_values(self):
         index = self.tab_select.currentIndex()
         if self.current_table:
-            values = self.current_table.values[index]
+            chunk = []
             combos = self.combo_select[str(index)]
             start_row = int(combos[0][0].currentText()) - 1
             start_col = int(combos[0][1].currentText()) - 1
@@ -345,8 +345,12 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             end_col = int(combos[0][3].currentText())
             for i in range(start_row, end_row):
                 for j in range(start_col, end_col):
-                    values[str((i, j))] = self.current_table.item(i,j).text()
+                    chunk.append((i, j, self.current_table.item(i,j).text()))
                     self.current_table.item(i, j).setBackground(combos[1])
+            if self.combo_wise.currentText() == 'Columnwise':
+                chunk.sort(key=lambda x: (x[1], x[0]))
+            self.current_table.values[index].extend(chunk)
+            print(self.current_table.values[index])
 
 
 
