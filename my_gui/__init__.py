@@ -1,2 +1,3 @@
-from .my_widgets import MyTableWidget, MyTabWidget
+from .my_widgets import InputTableWidget, OutputTableWidget
+from .my_widgets import InputTabWidget
 from .my_forms import MyAbstractForm

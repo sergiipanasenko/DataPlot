@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, QtCore, uic
-from my_gui import MyAbstractForm, MyTableWidget, MyTabWidget
+from my_gui import MyAbstractForm, InputTableWidget, OutputTableWidget, InputTabWidget
 from my_qt_files import MyQtDataFile, MyQtFileGroup
 
 
@@ -27,16 +27,8 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.table_number = 0
         self.current_tabs = None
         self.current_table = None
-        self.x_values = dict()
-        self.y_values = dict()
-        self.data_values = dict()
         self.qt_files = list()
         self.sub_windows = dict()
-
-        self.XChooseColor = QtGui.QColor(112, 194, 126)
-        self.YChooseColor = QtGui.QColor(112, 168, 194)
-        self.SChooseColor = QtGui.QColor(194, 112, 141)
-        self.DataChooseColor = QtGui.QColor(194, 194, 112)
 
         # explicit definition of the class attributes
         self.statusbar = self.findChild(QtWidgets.QStatusBar, "statusbar")
@@ -119,14 +111,14 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.combo_colto_group = (self.combo_Xcolto, self.combo_Ycolto,
                                   self.combo_Scolto, self.combo_Datacolto)
         self.combo_select = {
-            '0': ((self.combo_Xrowfrom, self.combo_Xcolfrom,
-                  self.combo_Xrowto, self.combo_Xcolto), self.XChooseColor),
-            '1': ((self.combo_Yrowfrom, self.combo_Ycolfrom,
-                  self.combo_Yrowto, self.combo_Ycolto), self.YChooseColor),
-            '2': ((self.combo_Srowfrom, self.combo_Scolfrom,
-                  self.combo_Srowto, self.combo_Scolto), self.SChooseColor),
-            '3': ((self.combo_Datarowfrom, self.combo_Datacolfrom,
-                  self.combo_Datarowto, self.combo_Datacolto), self.DataChooseColor)}
+            '0': (self.combo_Xrowfrom, self.combo_Xcolfrom,
+                  self.combo_Xrowto, self.combo_Xcolto),
+            '1': (self.combo_Yrowfrom, self.combo_Ycolfrom,
+                  self.combo_Yrowto, self.combo_Ycolto),
+            '2': (self.combo_Srowfrom, self.combo_Scolfrom,
+                  self.combo_Srowto, self.combo_Scolto),
+            '3': (self.combo_Datarowfrom, self.combo_Datacolfrom,
+                  self.combo_Datarowto, self.combo_Datacolto)}
 
         # Labels
         self.label_totalrowvalue = self.findChild(QtWidgets.QLabel, "label_totalrowvalue")
@@ -229,7 +221,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         sender = self.sender()
         title = f'Input {self.input_window_number + 1}. {sender.get_file_name()}'
         icon = icons[sender.get_file_type()]
-        self.current_tabs = MyTabWidget()
+        self.current_tabs = InputTabWidget()
         self.current_tabs.add_data(sender.get_data())
         self._connect_signals(self.current_tabs)
         self._create_sub_window(title, icon, self.current_tabs)
@@ -238,12 +230,12 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             lambda: self.qt_files.remove(sender))
 
     def _connect_signals(self, current_widget):
-        if isinstance(current_widget, MyTabWidget):
+        if isinstance(current_widget, InputTabWidget):
             current_widget.currentChanged.connect(self.tab_change)
             for index in range(current_widget.count()):
                 child_widget = current_widget.widget(index)
                 self._connect_signals(child_widget)
-        if isinstance(current_widget, MyTableWidget):
+        if isinstance(current_widget, InputTableWidget):
             current_widget.cellClicked.connect(self.select_cell)
 
     def update_windows(self):
@@ -336,28 +328,20 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
 
     def add_values(self):
         index = self.tab_select.currentIndex()
-        if self.current_table:
-            chunk = []
+        if isinstance(self.current_table, InputTableWidget):
             combos = self.combo_select[str(index)]
-            start_row = int(combos[0][0].currentText()) - 1
-            start_col = int(combos[0][1].currentText()) - 1
-            end_row = int(combos[0][2].currentText())
-            end_col = int(combos[0][3].currentText())
-            for i in range(start_row, end_row):
-                for j in range(start_col, end_col):
-                    chunk.append((i, j, self.current_table.item(i,j).text()))
-                    self.current_table.item(i, j).setBackground(combos[1])
+            start_row = int(combos[0].currentText()) - 1
+            start_col = int(combos[1].currentText()) - 1
+            end_row = int(combos[2].currentText())
+            end_col = int(combos[3].currentText())
+            limits = (start_row, start_col, end_row, end_col)
+            row_wise = True
             if self.combo_wise.currentText() == 'Columnwise':
-                chunk.sort(key=lambda x: (x[1], x[0]))
-            self.current_table.values[index].extend(chunk)
-            print(self.current_table.values[index])
-
-
-
-
+                row_wise = False
+            self.current_table.add_values(limits, index, row_wise)
 
     def add_new_sub_window(self):
-        new_table = MyTableWidget()
+        new_table = InputTableWidget()
         title = None
         icon = None
         if self.sender().objectName() == 'actionNew':
@@ -383,10 +367,10 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window = self.mdiArea.activeSubWindow()
         if self.sub_window:
             sub_window_widget = self.sub_window.widget()
-            if isinstance(sub_window_widget, MyTabWidget):
+            if isinstance(sub_window_widget, InputTabWidget):
                 self.current_tabs = self.sub_window.widget()
                 self.current_tabs.currentChanged.emit(self.current_tabs.currentIndex())
-            if isinstance(sub_window_widget, MyTableWidget):
+            if isinstance(sub_window_widget, InputTableWidget):
                 self.current_tabs = None
                 self.current_table = sub_window_widget
             self._change_table()
@@ -406,7 +390,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         if index >= 0:
             tab_widget = self.sender()
             current_index = index
-            while isinstance(tab_widget.widget(current_index), MyTabWidget):
+            while isinstance(tab_widget.widget(current_index), InputTabWidget):
                 tab_widget = tab_widget.currentWidget()
                 current_index = tab_widget.currentIndex()
             self.current_table = tab_widget.widget(current_index)
@@ -415,8 +399,9 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
 
     def select_cell(self):
         table = self.current_table
-        self.label_currentrowvalue.setText(str(table.currentRow() + 1))
-        self.label_currentcolumnvalue.setText(str(table.currentColumn() + 1))
+        if table:
+            self.label_currentrowvalue.setText(str(table.currentRow() + 1))
+            self.label_currentcolumnvalue.setText(str(table.currentColumn() + 1))
 
     def closeEvent(self, e):
         self.settings.setValue('Geometry', self.saveGeometry())
