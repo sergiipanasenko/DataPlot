@@ -200,7 +200,9 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.actionRow.triggered.connect(self._remove_row)
         self.actionColumn.triggered.connect(self._remove_column)
 
-        self.push_add.clicked.connect(self.add_values)
+        self.push_add.clicked.connect(self.change_values)
+        self.push_remove.clicked.connect(self.change_values)
+        self.push_reset.clicked.connect(self.change_values)
         self.push_cancel.clicked.connect(QtWidgets.qApp.quit)
 
         self.mdiArea.subWindowActivated.connect(self.change_sub_window)
@@ -326,19 +328,27 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self._paint_output_table()
         self._change_table()
 
-    def add_values(self):
+    def change_values(self):
         index = self.tab_select.currentIndex()
         if isinstance(self.current_table, InputTableWidget):
+            if self.sender() == self.push_reset:
+                self.current_table.reset_values(index)
+                return
             combos = self.combo_select[str(index)]
             start_row = int(combos[0].currentText()) - 1
             start_col = int(combos[1].currentText()) - 1
             end_row = int(combos[2].currentText())
             end_col = int(combos[3].currentText())
             limits = (start_row, start_col, end_row, end_col)
-            row_wise = True
-            if self.combo_wise.currentText() == 'Columnwise':
-                row_wise = False
-            self.current_table.add_values(limits, index, row_wise)
+            if self.sender() == self.push_add:
+                row_wise = True
+                if self.combo_wise.currentText() == 'Columnwise':
+                    row_wise = False
+                self.current_table.add_values(limits, index, row_wise)
+                return
+            if self.sender() == self.push_remove:
+                self.current_table.remove_values(limits, index)
+                return
 
     def add_new_sub_window(self):
         new_table = InputTableWidget()

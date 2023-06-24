@@ -21,6 +21,8 @@ class InputDataThread(QObject):
                     cell_data = str(row_data[col])
                 self.obj.setItem(row, col, QTableWidgetItem(cell_data))
                 col += 1
+        if self.obj.rowCount() > 0 and self.obj.columnCount() > 0:
+            self.obj.background = self.obj.item(0, 0).background()
         self.finished.emit()
 
 
@@ -35,6 +37,7 @@ class DataTableWidget(QTableWidget):
         self.setFont(QFont("Times", 11, QFont.Normal))
 
         # self initialisation
+        self.background = None
         self.x_values = []
         self.y_values = []
         self.s_values = []
@@ -92,7 +95,29 @@ class InputTableWidget(DataTableWidget):
         self.values[index].extend(values)
         self.repaint_table()
 
+    def remove_values(self, limits: tuple, index: int):
+        start_row, start_col, end_row, end_col = limits
+        values = self.values[index]
+        for i in range(start_row, end_row):
+            for j in range(start_col, end_col):
+                if len(values) == 0:
+                    return
+                for value in values:
+                    *row_col, data = value
+                    if row_col == [i, j]:
+                        item = *row_col, data
+                        values.remove(item)
+                        break
+        self.repaint_table()
+
+    def reset_values(self, index):
+        self.values[index].clear()
+        self.repaint_table()
+
     def repaint_table(self):
+        for i in range(self.rowCount()):
+            for j in range(self.columnCount()):
+                self.item(i, j).setBackground(self.background)
         for index in range(4):
             for value in self.values[index]:
                 i, j, _ = value
