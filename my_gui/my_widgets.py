@@ -61,6 +61,11 @@ class DataTableWidget(QTableWidget):
         if data_color is not None:
             self.data_color = data_color
 
+    def reset_colors(self):
+        for i in range(self.rowCount()):
+            for j in range(self.columnCount()):
+                self.item(i, j).setBackground(self.background)
+
 
 class InputTableWidget(DataTableWidget):
     def __init__(self):
@@ -94,6 +99,7 @@ class InputTableWidget(DataTableWidget):
             values.sort(key=lambda x: (x[1], x[0]))
         self.values[index].extend(values)
         self.repaint_table()
+        return values
 
     def remove_values(self, limits: tuple, index: int):
         start_row, start_col, end_row, end_col = limits
@@ -115,9 +121,7 @@ class InputTableWidget(DataTableWidget):
         self.repaint_table()
 
     def repaint_table(self):
-        for i in range(self.rowCount()):
-            for j in range(self.columnCount()):
-                self.item(i, j).setBackground(self.background)
+        self.reset_colors()
         for index in range(4):
             for value in self.values[index]:
                 i, j, _ = value
@@ -129,8 +133,75 @@ class OutputTableWidget(DataTableWidget):
         # parent initialisation
         super().__init__()
 
-    def add_data(self):
-        pass
+        # blank output table creation
+        self.setRowCount(2)
+        self.setColumnCount(3)
+        for i in range(self.rowCount()):
+            for j in range(self.columnCount()):
+                self.setItem(i, j, QTableWidgetItem())
+        self.background = self.item(0, 0).background()
+        self.repaint_table()
+
+    def add_values(self, input_table, data, index):
+        values = self.values[index]
+        values.append((input_table, data))
+        self.change_data()
+
+    def extract_data(self, index):
+        values = self.values[index]
+        data = []
+        for value in values:
+            data.extend(value[1])
+        return data
+
+    def change_data(self):
+        self.clear()
+        self.setRowCount(0)
+        self.setColumnCount(0)
+        x_data = self.extract_data(0)
+        y_data = self.extract_data(1)
+        s_data = self.extract_data(2)
+        data = self.extract_data(3)
+        if x_data:
+            if self.columnCount() < 1:
+                self.setColumnCount(1)
+            for i in range(1, len(x_data) + 1):
+                if self.rowCount() < i + 1:
+                    self.setRowCount(i + 1)
+                self.setItem(i, 0,
+                             QTableWidgetItem(x_data[i - 1][2]))
+        if s_data:
+            if self.columnCount() < 2:
+                self.setColumnCount(2)
+            for i in range(1, len(s_data) + 1):
+                if self.rowCount() < i + 1:
+                    self.setRowCount(i + 1)
+                self.setItem(i, 1,
+                             QTableWidgetItem(s_data[i - 1][2]))
+        if y_data:
+            if self.rowCount() < 1:
+                self.setRowCount(1)
+            for j in range(2, len(y_data) + 2):
+                if self.columnCount() < j + 1:
+                    self.setColumnCount(j + 1)
+                self.setItem(0, j,
+                             QTableWidgetItem(y_data[j - 2][2]))
+        self.repaint_table()
+
+    def repaint_table(self):
+        # self.reset_colors()
+        for ind_row in range(self.rowCount()):
+            for ind_col in range(self.columnCount()):
+                if self.item(ind_row, ind_col) is None:
+                    self.setItem(ind_row, ind_col, QTableWidgetItem())
+                if ind_row > 0 and ind_col == 0:
+                    self.item(ind_row, ind_col).setBackground(self.x_color)
+                if ind_row > 0 and ind_col == 1:
+                    self.item(ind_row, ind_col).setBackground(self.s_color)
+                if ind_row == 0 and ind_col > 1:
+                    self.item(ind_row, ind_col).setBackground(self.y_color)
+                if ind_row > 0 and ind_col > 1:
+                    self.item(ind_row, ind_col).setBackground(self.data_color)
 
 
 class InputTabWidget(QTabWidget):

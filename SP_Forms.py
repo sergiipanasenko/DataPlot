@@ -26,7 +26,8 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.sub_window_amount = 0
         self.table_number = 0
         self.current_tabs = None
-        self.current_table = None
+        self.input_table = None
+        self.output_table = None
         self.qt_files = list()
         self.sub_windows = dict()
 
@@ -263,9 +264,9 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
 
     def _change_table(self):
         self._combo_label_reset()
-        if self.current_table:
-            col_number = self.current_table.columnCount()
-            row_number = self.current_table.rowCount()
+        if self.input_table:
+            col_number = self.input_table.columnCount()
+            row_number = self.input_table.rowCount()
             if col_number and row_number:
                 row_number_list = list(map(str, range(1, row_number + 1)))
                 col_number_list = list(map(str, range(1, col_number + 1)))
@@ -281,8 +282,8 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
                 for combo_col_to in self.combo_colto_group:
                     combo_col_to.addItems(col_number_list)
                     combo_col_to.setCurrentIndex(len(col_number_list) - 1)
-                self.label_totalrowvalue.setText(str(self.current_table.rowCount()))
-                self.label_totalcolumnvalue.setText(str(self.current_table.columnCount()))
+                self.label_totalrowvalue.setText(str(self.input_table.rowCount()))
+                self.label_totalcolumnvalue.setText(str(self.input_table.columnCount()))
 
     def _create_sub_window(self, sub_window_title, sub_window_icon, widget):
         if not self.menuAdd.isEnabled():
@@ -304,74 +305,77 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
 
     def _add_row(self, flag):
         if flag:
-            self.current_table.insertRow(self.current_table.currentRow())
+            self.input_table.insertRow(self.input_table.currentRow())
         else:
-            self.current_table.insertRow(self.current_table.currentRow() + 1)
+            self.input_table.insertRow(self.input_table.currentRow() + 1)
         self._change_table()
         self._paint_output_table()
 
     def _add_column(self, flag):
         if flag:
-            self.current_table.insertColumn(self.current_table.currentColumn())
+            self.input_table.insertColumn(self.input_table.currentColumn())
         else:
-            self.current_table.insertColumn(self.current_table.currentColumn() + 1)
+            self.input_table.insertColumn(self.input_table.currentColumn() + 1)
         self._change_table()
         self._paint_output_table()
 
     def _remove_row(self):
-        self.current_table.removeRow(self.current_table.currentRow())
+        self.input_table.removeRow(self.input_table.currentRow())
         self._paint_output_table()
         self._change_table()
 
     def _remove_column(self):
-        self.current_table.removeColumn(self.current_table.currentColumn())
+        self.input_table.removeColumn(self.input_table.currentColumn())
         self._paint_output_table()
         self._change_table()
 
     def change_values(self):
         index = self.tab_select.currentIndex()
-        if isinstance(self.current_table, InputTableWidget):
+        if isinstance(self.input_table, InputTableWidget):
             if self.sender() == self.push_reset:
-                self.current_table.reset_values(index)
-                return
-            combos = self.combo_select[str(index)]
-            start_row = int(combos[0].currentText()) - 1
-            start_col = int(combos[1].currentText()) - 1
-            end_row = int(combos[2].currentText())
-            end_col = int(combos[3].currentText())
-            limits = (start_row, start_col, end_row, end_col)
-            if self.sender() == self.push_add:
-                row_wise = True
-                if self.combo_wise.currentText() == 'Columnwise':
-                    row_wise = False
-                self.current_table.add_values(limits, index, row_wise)
-                return
-            if self.sender() == self.push_remove:
-                self.current_table.remove_values(limits, index)
-                return
+                self.input_table.reset_values(index)
+            else:
+                combos = self.combo_select[str(index)]
+                start_row = int(combos[0].currentText()) - 1
+                start_col = int(combos[1].currentText()) - 1
+                end_row = int(combos[2].currentText())
+                end_col = int(combos[3].currentText())
+                limits = (start_row, start_col, end_row, end_col)
+                if self.sender() == self.push_add:
+                    row_wise = True
+                    if self.combo_wise.currentText() == 'Columnwise':
+                        row_wise = False
+                    values = self.input_table.add_values(limits, index, row_wise)
+                    if self.output_table is None:
+                        self.actionOutput.triggered.emit()
+                    self.output_table.add_values(self.input_table, values, index)
+                elif self.sender() == self.push_remove:
+                    self.input_table.remove_values(limits, index)
 
     def add_new_sub_window(self):
-        new_table = InputTableWidget()
         title = None
         icon = None
+        new_table = None
         if self.sender().objectName() == 'actionNew':
+            new_table = InputTableWidget()
             self.statusbar.showMessage('Creating new input data table...')
             title = f'Input {self.input_window_number + 1}'
             icon = 'ui/New_Icons/add-file.png'
             new_table.setRowCount(1)
             new_table.setColumnCount(1)
+            self.input_table = new_table
+            self._connect_signals(self.input_table)
         elif self.sender().objectName() == 'actionOutput':
+            new_table = OutputTableWidget()
             self.statusbar.showMessage('Creating new output data table...')
             title = f'Output {self.output_window_number + 1}'
             icon = 'ui/New_Icons/output.png'
-            new_table.setRowCount(2)
-            new_table.setColumnCount(3)
+            self.output_table = new_table
+            self._connect_signals(self.output_table)
+        new_table.repaint_table()
         self._create_sub_window(title, icon, new_table)
-        self._paint_output_table()
-        self.current_table = new_table
-        self._paint_output_table()
         self._change_table()
-        self._connect_signals(self.current_table)
+        self._connect_signals(self.input_table)
 
     def change_sub_window(self):
         self.sub_window = self.mdiArea.activeSubWindow()
@@ -382,7 +386,7 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
                 self.current_tabs.currentChanged.emit(self.current_tabs.currentIndex())
             if isinstance(sub_window_widget, InputTableWidget):
                 self.current_tabs = None
-                self.current_table = sub_window_widget
+                self.input_table = sub_window_widget
             self._change_table()
         else:
             for item in self.action_table:
@@ -403,12 +407,12 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
             while isinstance(tab_widget.widget(current_index), InputTabWidget):
                 tab_widget = tab_widget.currentWidget()
                 current_index = tab_widget.currentIndex()
-            self.current_table = tab_widget.widget(current_index)
+            self.input_table = tab_widget.widget(current_index)
             self._change_table()
             self.select_cell()
 
     def select_cell(self):
-        table = self.current_table
+        table = self.input_table
         if table:
             self.label_currentrowvalue.setText(str(table.currentRow() + 1))
             self.label_currentcolumnvalue.setText(str(table.currentColumn() + 1))
@@ -417,23 +421,3 @@ class MyDataPlotForm(QtWidgets.QMainWindow, MyAbstractForm):
         self.settings.setValue('Geometry', self.saveGeometry())
         self.settings.setValue('WindowState', self.saveState())
         super().closeEvent(e)
-
-    def _paint_output_table(self):
-        sub_window = self.mdiArea.activeSubWindow()
-        if sub_window:
-            sub_window_title = sub_window.windowTitle()
-            if 'Output' in sub_window_title:
-                table = self.current_table
-                for ind_row in range(table.rowCount()):
-                    for ind_col in range(table.columnCount()):
-                        if table.item(ind_row, ind_col) is None:
-                            table.setItem(ind_row, ind_col, QtWidgets.QTableWidgetItem())
-                        if ind_row > 0 and ind_col == 0:
-                            table.item(ind_row, ind_col).setBackground(self.XChooseColor)
-                        if ind_row > 0 and ind_col == 1:
-                            table.item(ind_row, ind_col).setBackground(self.SChooseColor)
-                        if ind_row == 0 and ind_col > 1:
-                            table.item(ind_row, ind_col).setBackground(self.YChooseColor)
-                        if ind_row > 0 and ind_col > 1:
-                            table.item(ind_row, ind_col).setBackground(self.DataChooseColor)
-
