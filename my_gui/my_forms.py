@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 
 
-class MyAbstractForm(QtCore.QObject):
+class AbstractForm(QtCore.QObject):
     def __init__(self):
         super().__init__()
 

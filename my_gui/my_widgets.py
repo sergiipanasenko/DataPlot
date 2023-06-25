@@ -37,7 +37,6 @@ class DataTableWidget(QTableWidget):
         self.setFont(QFont("Times", 11, QFont.Normal))
 
         # self initialisation
-        self.background = None
         self.x_values = []
         self.y_values = []
         self.s_values = []
@@ -50,6 +49,10 @@ class DataTableWidget(QTableWidget):
         self.data_color = QColor(194, 194, 112)
         self.colors = (self.x_color, self.y_color,
                        self.s_color, self.data_color)
+        self.setRowCount(1)
+        self.setColumnCount(1)
+        self.setItem(0, 0, QTableWidgetItem())
+        self.background = self.item(0, 0).background()
 
     def set_colors(self, x_color=None, y_color=None, s_color=None, data_color=None):
         if x_color is not None:
@@ -139,13 +142,12 @@ class OutputTableWidget(DataTableWidget):
         for i in range(self.rowCount()):
             for j in range(self.columnCount()):
                 self.setItem(i, j, QTableWidgetItem())
-        self.background = self.item(0, 0).background()
         self.repaint_table()
 
-    def add_values(self, input_table, data, index):
+    def add_values(self, input_table, data, index, col_number=None):
         values = self.values[index]
         values.append((input_table, data))
-        self.change_data()
+        self.change_data(col_number)
 
     def extract_data(self, index):
         values = self.values[index]
@@ -154,7 +156,7 @@ class OutputTableWidget(DataTableWidget):
             data.extend(value[1])
         return data
 
-    def change_data(self):
+    def change_data(self, col_number=None):
         self.clear()
         self.setRowCount(0)
         self.setColumnCount(0)
@@ -186,6 +188,18 @@ class OutputTableWidget(DataTableWidget):
                     self.setColumnCount(j + 1)
                 self.setItem(0, j,
                              QTableWidgetItem(y_data[j - 2][2]))
+        if data:
+            if col_number is None:
+                col_number = len(y_data)
+            if self.columnCount() < col_number + 2:
+                self.setColumnCount(col_number + 2)
+            for index in range(len(data)):
+                i = 1 + index // col_number
+                j = 2 + index % col_number
+                if self.rowCount() < i + 1:
+                    self.setRowCount(i + 1)
+                self.setItem(i, j,
+                             QTableWidgetItem(data[index][2]))
         self.repaint_table()
 
     def repaint_table(self):
