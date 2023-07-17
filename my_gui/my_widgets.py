@@ -156,7 +156,7 @@ class OutputTableWidget(DataTableWidget):
             data.extend(value[1])
         return data
 
-    def change_data(self, col_number=None):
+    def change_data(self, col_number):
         self.clear()
         self.setRowCount(0)
         self.setColumnCount(0)
@@ -189,8 +189,6 @@ class OutputTableWidget(DataTableWidget):
                 self.setItem(0, j,
                              QTableWidgetItem(y_data[j - 2][2]))
         if data:
-            if col_number is None:
-                col_number = len(y_data)
             if self.columnCount() < col_number + 2:
                 self.setColumnCount(col_number + 2)
             for index in range(len(data)):

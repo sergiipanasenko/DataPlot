@@ -316,9 +316,15 @@ class DataPlotForm(QtWidgets.QMainWindow, AbstractForm):
                     values = self.input_table.add_values(limits, index, row_wise)
                     if self.output_table is None:
                         self.action_output.triggered.emit()
-                    col_number = None
-                    if index == 3 and not self.check_data.isChecked():
-                        col_number = int(self.line_data_cols.text())
+                    col_number = 1
+                    if index == 3:
+                        if not self.check_data.isChecked():
+                            col_number = int(self.line_data_cols.text())
+                        else:
+                            if row_wise:
+                                col_number = end_col - start_col
+                            else:
+                                col_number = end_row - start_row
                     self.output_table.add_values(self.input_table, values,
                                                  index, col_number)
                 elif self.sender() == self.push_remove:
@@ -362,7 +368,7 @@ class DataPlotForm(QtWidgets.QMainWindow, AbstractForm):
             self._combo_label_reset()
 
     def _combo_label_reset(self):
-        for combo in (self.combo_select):
+        for combo in self.combo_select:
             combo.clear()
         for label_value in self.label_value_group:
             label_value.setText(str(0))
